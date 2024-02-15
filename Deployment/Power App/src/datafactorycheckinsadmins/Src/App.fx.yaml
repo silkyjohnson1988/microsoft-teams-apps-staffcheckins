@@ -1,0 +1,10 @@
+App As appinfo:
+    OnStart: |
+        =Set(CurrUserId,Office365Users.MyProfile().Id);
+        Set(Last7days,Today()-7);
+        Set(Last30days,Today()-30);
+        ClearCollect(colOwnedGroups,Office365Groups.ListOwnedGroups().value.displayName);
+        ClearCollect(colMyOwnedGroups,Office365Groups.ListOwnedGroups().value);
+        ClearCollect(colMyAllTeams,MicrosoftTeams.GetAllTeams().value);
+        If(LookUp('Check-inSchedule',Title=CurrUserId,Title)=CurrUserId,Set(firstrequest,false),Set(firstrequest,true));
+

@@ -1,0 +1,770 @@
+scrnCheckInReport As screen:
+    Fill: =RGBA(249, 248, 247, 1)
+    Height: =Max(App.Height,App.DesignHeight)
+    OnVisible: |-
+        =Set(locCheckinReportScreenLoader,true);
+        Set(locStaffCheckinReports,StaffCheckinReports.Run().responsestaffcheckinreports);
+        ClearCollect(colStaffCheckinReports,AddColumns(Split(locStaffCheckinReports,"/n"),
+        "ID",Mid(Result,Find("ID",Result)+4,(Find("UserEmail",Result)-Find("ID",Result)-6)),
+        "UserEmail",Mid(Result,Find("UserEmail",Result)+12,(Find("UserGivenNotes",Result)-Find("UserEmail",Result)-15)),
+        "UserGivenNotes",Mid(Result,Find("UserGivenNotes",Result)+17,(Find("UserCheckinAddress",Result)-Find("UserGivenNotes",Result)-20)),
+        "UserCheckinAddress",Mid(Result,Find("UserCheckinAddress",Result)+21,(Find("UserCheckinTeam",Result)-Find("UserCheckinAddress",Result)-24)),
+        "UserCheckinTeam",Mid(Result,Find("UserCheckinTeam",Result)+18,(Find("UserCheckinTitle",Result)-Find("UserCheckinTeam",Result)-21)),
+        "UserCheckinTitle",Mid(Result,Find("UserCheckinTitle",Result)+19,(Find("UniqueIdentifier",Result)-Find("UserCheckinTitle",Result)-22)),
+        "UniqueIdentifier",Mid(Result,Find("UniqueIdentifier",Result)+19,(Find("UserCheckinSchedule",Result)-Find("UniqueIdentifier",Result)-22)),"UserCheckinSchedule",Mid(Result,Find("UserCheckinSchedule",Result)+22,(Find("Created",Result)-Find("UserCheckinSchedule",Result)-25)),
+        "Created",Mid(Result,Find("Created",Result)+10,(Find("Modified",Result)-Find("Created",Result)-13)),
+        "Modified",Mid(Result,Find("Modified",Result)+11,(Find("UserCreatedDate",Result)-Find("Modified",Result)-14)),
+        "UserCreatedDate",Mid(Result,Find("UserCreatedDate",Result)+18,(Find("UserTitle",Result)-Find("UserCreatedDate",Result)-21)),
+        "UserTitle",Mid(Result,Find("UserTitle",Result)+12,(Find("}",Result)-Find("UserTitle",Result)-15))));
+        ClearCollect(colGroupById,AddColumns(GroupBy(colStaffCheckinReports,"UniqueIdentifier","Remaining"),"UserCheckinTeam",Remaining.UserCheckinTeam,"UserCheckinTitle",Remaining.UserCheckinTitle));
+        Set(locCheckinReportScreenLoader,false);
+        Set(locUserGallery_Report,true);
+    Orientation: =If(scrnCheckInReport.Width < scrnCheckInReport.Height, Layout.Vertical, Layout.Horizontal)
+    Size: =1 + CountRows(App.SizeBreakpoints) - CountIf(App.SizeBreakpoints, Value >= scrnCheckInReport.Width)
+    Width: =Max(App.Width, App.DesignWidth)
+
+    Label3 As label:
+        Color: =RGBA(37, 36, 35, 1)
+        Font: =Font.'Segoe UI'
+        Height: =20
+        PaddingLeft: =0
+        Size: =10.5
+        Text: ="View the check-in details submitted by your team members"
+        Width: =1000
+        X: =lblHeading_MyRequest_1.X
+        Y: =lblHeading_MyRequest_1.Y+lblHeading_MyRequest_1.Height+8
+        ZIndex: =14
+
+    Button3_2 As button:
+        BorderColor: =ColorFade(Button3_2.Fill, -15%)
+        BorderStyle: =BorderStyle.None
+        BorderThickness: =0
+        Color: =RGBA(37, 36, 35, 1)
+        Fill: =RGBA(249, 248, 247, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Normal
+        HoverBorderColor: =ColorFade(Button3_2.BorderColor, 20%)
+        HoverColor: =RGBA(0, 0, 0, 1)
+        HoverFill: =RGBA(249, 248, 247, 1)
+        OnSelect: =Navigate(scrnCreatedCheckIn);
+        PaddingBottom: =15
+        PaddingLeft: =15
+        PaddingRight: =15
+        PaddingTop: =15
+        PressedBorderColor: =Button3_2.Fill
+        PressedColor: =RGBA(0, 0, 0, 1)
+        PressedFill: =RGBA(249, 248, 247, 1)
+        RadiusBottomLeft: =3
+        RadiusBottomRight: =3
+        RadiusTopLeft: =3
+        RadiusTopRight: =3
+        Size: =10.5
+        Text: ="Manage"
+        Width: =120
+        X: =Parent.Width-Button4_2.Width-Button3_2.Width
+        ZIndex: =15
+
+    Button4_2 As button:
+        BorderColor: =ColorFade(Button4_2.Fill, -15%)
+        BorderStyle: =BorderStyle.None
+        BorderThickness: =0
+        Color: =RGBA(37, 36, 35, 1)
+        Fill: =RGBA(255, 255, 255, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Bold
+        HoverBorderColor: =ColorFade(Button4_2.BorderColor, 20%)
+        HoverColor: =RGBA(37, 36, 35, 1)
+        HoverFill: =RGBA(255, 255, 255, 1)
+        OnSelect: |
+            =Set(ReportTab,true);
+        PaddingBottom: =15
+        PaddingLeft: =15
+        PaddingRight: =15
+        PaddingTop: =15
+        PressedBorderColor: =Button4_2.Fill
+        PressedColor: =RGBA(37, 36, 35, 1)
+        PressedFill: =RGBA(255, 255, 255, 1)
+        RadiusBottomLeft: =3
+        RadiusBottomRight: =3
+        RadiusTopLeft: =3
+        RadiusTopRight: =3
+        Size: =10.5
+        Text: ="Reports"
+        Width: =120
+        X: =Parent.Width-Button4_2.Width
+        ZIndex: =16
+
+    icnUp_TeamName_ReportScreen As icon.ChevronUp:
+        Color: =RGBA(0, 0, 0, 1)
+        DisabledFill: =icnUp_TeamName_ReportScreen.Fill
+        Height: =16
+        HoverBorderColor: =ColorFade(icnUp_TeamName_ReportScreen.BorderColor, 20%)
+        HoverColor: =ColorFade(icnUp_TeamName_ReportScreen.Color, 20%)
+        HoverFill: =icnUp_TeamName_ReportScreen.Fill
+        Icon: =Icon.ChevronUp
+        OnSelect: |-
+            =UpdateContext({locTeamReport:!locTeamReport});
+        PressedBorderColor: =ColorFade(icnUp_TeamName_ReportScreen.BorderColor, -20%)
+        PressedColor: =ColorFade(icnUp_TeamName_ReportScreen.Color, -20%)
+        PressedFill: =icnUp_TeamName_ReportScreen.Fill
+        Visible: |
+            =locTeamReport
+        Width: =12
+        X: =80
+        Y: =shpInnerRectangle_MyRequest_1.Y+15
+        ZIndex: =17
+
+    icnDown_TeamName_ReportScreen As icon.ChevronDown:
+        Color: =RGBA(0, 0, 0, 1)
+        DisabledFill: =icnDown_TeamName_ReportScreen.Fill
+        Height: =16
+        HoverBorderColor: =ColorFade(icnDown_TeamName_ReportScreen.BorderColor, 20%)
+        HoverColor: =ColorFade(icnDown_TeamName_ReportScreen.Color, 20%)
+        HoverFill: =icnDown_TeamName_ReportScreen.Fill
+        Icon: =Icon.ChevronDown
+        OnSelect: |-
+            =UpdateContext({locTeamReport:!locTeamReport});
+        PressedBorderColor: =ColorFade(icnDown_TeamName_ReportScreen.BorderColor, -20%)
+        PressedColor: =ColorFade(icnDown_TeamName_ReportScreen.Color, -20%)
+        PressedFill: =icnDown_TeamName_ReportScreen.Fill
+        Visible: |
+            =!locTeamReport
+        Width: =12
+        X: =80
+        Y: =shpInnerRectangle_MyRequest_1.Y+15
+        ZIndex: =18
+
+    icnUp_Title_ReportScreen As icon.ChevronUp:
+        Color: =RGBA(0, 0, 0, 1)
+        DisabledFill: =icnUp_Title_ReportScreen.Fill
+        Height: =16
+        HoverBorderColor: =ColorFade(icnUp_Title_ReportScreen.BorderColor, 20%)
+        HoverColor: =ColorFade(icnUp_Title_ReportScreen.Color, 20%)
+        HoverFill: =icnUp_Title_ReportScreen.Fill
+        Icon: =Icon.ChevronUp
+        OnSelect: |-
+            =UpdateContext({locTitleReport:!locTitleReport});
+        PressedBorderColor: =ColorFade(icnUp_Title_ReportScreen.BorderColor, -20%)
+        PressedColor: =ColorFade(icnUp_Title_ReportScreen.Color, -20%)
+        PressedFill: =icnUp_Title_ReportScreen.Fill
+        Visible: |-
+            =//!locTitleReport
+            false
+        Width: =12
+        X: =490
+        Y: =shpInnerRectangle_MyRequest_1.Y+15
+        ZIndex: =19
+
+    icnDown_Title_ReportScreen As icon.ChevronDown:
+        Color: =RGBA(0, 0, 0, 1)
+        DisabledFill: =icnDown_Title_ReportScreen.Fill
+        Height: =16
+        HoverBorderColor: =ColorFade(icnDown_Title_ReportScreen.BorderColor, 20%)
+        HoverColor: =ColorFade(icnDown_Title_ReportScreen.Color, 20%)
+        HoverFill: =icnDown_Title_ReportScreen.Fill
+        Icon: =Icon.ChevronDown
+        OnSelect: |-
+            =UpdateContext({locTitleReport:!locTitleReport});
+        PressedBorderColor: =ColorFade(icnDown_Title_ReportScreen.BorderColor, -20%)
+        PressedColor: =ColorFade(icnDown_Title_ReportScreen.Color, -20%)
+        PressedFill: =icnDown_Title_ReportScreen.Fill
+        Visible: |-
+            =//locTitleReport
+            false
+        Width: =12
+        X: =490
+        Y: =shpInnerRectangle_MyRequest_1.Y+15
+        ZIndex: =20
+
+    lblScheduleHeading_MyRequest_4 As label:
+        Color: =RGBA(72, 70, 68, 1)
+        FocusedBorderColor: =lblScheduleHeading_MyRequest_4.BorderColor
+        Font: =Font.'Segoe UI'
+        Height: =16
+        HoverBorderColor: =lblScheduleHeading_MyRequest_4.BorderColor
+        HoverColor: =lblScheduleHeading_MyRequest_4.Color
+        HoverFill: =lblScheduleHeading_MyRequest_4.Fill
+        PaddingLeft: =0
+        PressedBorderColor: =lblScheduleHeading_MyRequest_4.BorderColor
+        PressedColor: =lblScheduleHeading_MyRequest_4.Color
+        PressedFill: =lblScheduleHeading_MyRequest_4.Fill
+        Size: =9
+        Text: ="Type"
+        Visible: =false
+        Width: =86
+        X: =882
+        Y: =shpInnerRectangle_MyRequest_1.Y+15
+        ZIndex: =21
+
+    shpScreenLoader As rectangle:
+        DisabledFill: =shpScreenLoader.Fill
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =768
+        HoverFill: =shpScreenLoader.Fill
+        PressedFill: =shpScreenLoader.Fill
+        Visible: =locCheckinReportScreenLoader
+        Width: =1366
+        ZIndex: =25
+
+    imgScreenLoader As image:
+        HoverBorderColor: =ColorFade(imgScreenLoader.BorderColor, 20%)
+        HoverFill: =ColorFade(imgScreenLoader.Fill, 20%)
+        Image: =Assets0Images00004
+        PressedBorderColor: =ColorFade(imgScreenLoader.BorderColor, -20%)
+        PressedFill: =ColorFade(imgScreenLoader.Fill, -20%)
+        Visible: =locCheckinReportScreenLoader
+        X: =611
+        Y: =323
+        ZIndex: =26
+
+    "'grpNoCheck-ins_Report' As group":
+        Height: =5
+        Width: =5
+        X: =52
+        Y: =247
+        ZIndex: =32
+
+        Rectangle4_2 As rectangle:
+            DisabledFill: =Rectangle4_2.Fill
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =shpInnerRectangle_MyRequest_1.Height
+            HoverFill: =Rectangle4_2.Fill
+            PressedFill: =Rectangle4_2.Fill
+            Visible: =((locUserGallery_Report) && IsBlank(lblTeamName_MyRequest_1.Text) )
+            Width: =shpInnerRectangle_MyRequest_1.Width
+            X: =shpInnerRectangle_MyRequest_1.X
+            Y: =shpInnerRectangle_MyRequest_1.Y
+            ZIndex: =22
+
+        Label25_2 As label:
+            Align: =Align.Center
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Size: =13.5
+            Text: ="There are no check-ins"
+            Visible: =((locUserGallery_Report) && IsBlank(lblTeamName_MyRequest_1.Text) )
+            Width: =Rectangle4_2.Width
+            X: =Rectangle4_2.X
+            Y: =Image16_2.Y+Image16_2.Height+16
+            ZIndex: =23
+
+        Image16_2 As image:
+            Height: =150
+            HoverBorderColor: =ColorFade(Image16_2.BorderColor, 20%)
+            HoverFill: =ColorFade(Image16_2.Fill, 20%)
+            Image: =visibility
+            ImagePosition: =ImagePosition.Fill
+            PressedBorderColor: =ColorFade(Image16_2.BorderColor, -20%)
+            PressedFill: =ColorFade(Image16_2.Fill, -20%)
+            Visible: =((locUserGallery_Report) && IsBlank(lblTeamName_MyRequest_1.Text) )
+            Width: =150
+            X: =Rectangle4_2.X+(Rectangle4_2.Width/2)-(Image16_2.Width/2)
+            Y: =Rectangle4_2.Y+(Rectangle4_2.Height/2)-(Image16_2.Height/2)-40
+            ZIndex: =24
+
+    grpFirstRequest As group:
+        Height: =5
+        Width: =5
+        X: =40
+        Y: =40
+        ZIndex: =38
+
+        shpRectangle_FirstRequest As rectangle:
+            DisabledFill: =shpRectangle_FirstRequest.Fill
+            Fill: =RGBA(249, 248, 247, 1)
+            FocusedBorderColor: =shpRectangle_FirstRequest.BorderColor
+            Height: =768
+            HoverFill: =shpRectangle_FirstRequest.Fill
+            PressedFill: =shpRectangle_FirstRequest.Fill
+            Visible: =firstrequest
+            Width: =1366
+            ZIndex: =27
+
+        btnCreateRequest_FirstRequest As button:
+            BorderColor: =ColorFade(btnCreateRequest_FirstRequest.Fill, -15%)
+            BorderStyle: =BorderStyle.None
+            BorderThickness: =0
+            Fill: =RGBA(98, 100, 167, 1)
+            FocusedBorderColor: =btnCreateRequest_FirstRequest.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =32
+            HoverBorderColor: =ColorFade(btnCreateRequest_FirstRequest.BorderColor, 20%)
+            OnSelect: |-
+                =Navigate(scrnCreatedCheckIn);
+                Set(CreateCheckin,true);
+                NewForm(Form1);
+                ResetForm(Form1);
+            PressedBorderColor: =btnCreateRequest_FirstRequest.Fill
+            PressedColor: =btnCreateRequest_FirstRequest.Fill
+            PressedFill: =btnCreateRequest_FirstRequest.Color
+            RadiusBottomLeft: =2
+            RadiusBottomRight: =2
+            RadiusTopLeft: =2
+            RadiusTopRight: =2
+            Size: =10.5
+            Text: ="Create check-in"
+            Visible: =firstrequest
+            Width: =120
+            X: =(Parent.Width/2)-(btnCreateRequest_FirstRequest.Width/2)
+            Y: =lblDescription_FirstRequest.Y+lblDescription_FirstRequest.Height+16
+            ZIndex: =28
+
+        lblWelcomeMsg_FirstRequest As label:
+            Align: =Align.Center
+            Color: =RGBA(98, 100, 167, 1)
+            FocusedBorderColor: =lblWelcomeMsg_FirstRequest.BorderColor
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            HoverBorderColor: =lblWelcomeMsg_FirstRequest.BorderColor
+            HoverColor: =lblWelcomeMsg_FirstRequest.Color
+            HoverFill: =lblWelcomeMsg_FirstRequest.Fill
+            PressedBorderColor: =lblWelcomeMsg_FirstRequest.BorderColor
+            PressedColor: =lblWelcomeMsg_FirstRequest.Color
+            PressedFill: =lblWelcomeMsg_FirstRequest.Fill
+            Size: =18
+            Text: ="Welcome to Staff Check-ins!"
+            Visible: =firstrequest
+            Width: =Parent.Width
+            Y: =img_FirstRequest.Y+img_FirstRequest.Height+32
+            ZIndex: =29
+
+        lblDescription_FirstRequest As label:
+            Align: =Align.Center
+            Color: =RGBA(37, 36, 35, 1)
+            FocusedBorderColor: =lblDescription_FirstRequest.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =72
+            HoverBorderColor: =lblDescription_FirstRequest.BorderColor
+            HoverColor: =lblDescription_FirstRequest.Color
+            HoverFill: =lblDescription_FirstRequest.Fill
+            PressedBorderColor: =lblDescription_FirstRequest.BorderColor
+            PressedColor: =lblDescription_FirstRequest.Color
+            PressedFill: =lblDescription_FirstRequest.Fill
+            Size: =13.5
+            Text: ="Create an automated system in Microsoft Teams for your frontline workers to check in at your chosen frequency."
+            Visible: =firstrequest
+            Width: =Parent.Width-846
+            X: =(Parent.Width/2)-(lblDescription_FirstRequest.Width/2)
+            Y: =lblWelcomeMsg_FirstRequest.Y+lblWelcomeMsg_FirstRequest.Height+32
+            ZIndex: =30
+
+        img_FirstRequest As image:
+            FocusedBorderColor: =img_FirstRequest.BorderColor
+            Height: =64
+            HoverBorderColor: =ColorFade(img_FirstRequest.BorderColor, 20%)
+            HoverFill: =ColorFade(img_FirstRequest.Fill, 20%)
+            Image: ='Raw_FLW Copy 4'
+            ImagePosition: =ImagePosition.Fill
+            PressedBorderColor: =ColorFade(img_FirstRequest.BorderColor, -20%)
+            PressedFill: =ColorFade(img_FirstRequest.Fill, -20%)
+            Visible: =firstrequest
+            Width: =64
+            X: =(shpRectangle_FirstRequest.Width/2)-(img_FirstRequest.Width/2)
+            Y: =shpRectangle_FirstRequest.Y+240
+            ZIndex: =31
+
+    grpMyRequests_1 As group:
+        Height: =5
+        Width: =5
+        X: =80
+        Y: =80
+        ZIndex: =64
+
+        shpRectangle_MyRequest_2 As rectangle:
+            DisabledFill: =shpRectangle_MyRequest_2.Fill
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =Parent.Height-40
+            HoverFill: =shpRectangle_MyRequest_2.Fill
+            PressedFill: =shpRectangle_MyRequest_2.Fill
+            Width: =1366
+            Y: =Button4_2.Y+Button4_2.Height
+            ZIndex: =1
+
+        lblHeading_MyRequest_1 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblHeading_MyRequest_1.BorderColor
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =24
+            HoverBorderColor: =lblHeading_MyRequest_1.BorderColor
+            HoverColor: =lblHeading_MyRequest_1.Color
+            HoverFill: =lblHeading_MyRequest_1.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblHeading_MyRequest_1.BorderColor
+            PressedColor: =lblHeading_MyRequest_1.Color
+            PressedFill: =lblHeading_MyRequest_1.Fill
+            Size: =13.5
+            Text: ="Dashboard"
+            Width: =shpRectangle_MyRequest_2.Width-64
+            X: =shpRectangle_MyRequest_2.X+32
+            Y: =shpRectangle_MyRequest_2.Y+22
+            ZIndex: =2
+
+        btnSearchRequest_MyRequest_1 As button:
+            BorderColor: =ColorFade(btnSearchRequest_MyRequest_1.Fill, -15%)
+            BorderThickness: =1
+            Color: =RGBA(37, 36, 36, 1)
+            Fill: =RGBA(255, 255, 255, 1)
+            FocusedBorderColor: =btnSearchRequest_MyRequest_1.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =32
+            HoverBorderColor: =ColorFade(btnSearchRequest_MyRequest_1.BorderColor, 20%)
+            HoverColor: =RGBA(0, 0, 0, 1)
+            HoverFill: =RGBA(171, 176, 184, 1)
+            OnSelect: =
+            PressedBorderColor: =btnSearchRequest_MyRequest_1.Fill
+            PressedColor: =RGBA(0, 0, 0, 1)
+            PressedFill: =RGBA(133, 140, 152, 1)
+            RadiusBottomLeft: =3
+            RadiusBottomRight: =3
+            RadiusTopLeft: =3
+            RadiusTopRight: =3
+            Size: =10.5
+            Text: ="Search"
+            Visible: =false
+            Width: =96
+            X: =shpRectangle_MyRequest_2.X+shpRectangle_MyRequest_2.Width-32-btnSearchRequest_MyRequest_1.Width
+            Y: =shpRectangle_MyRequest_2.Y+50
+            ZIndex: =3
+
+        txtSearchRequest_MyRequest_1 As text:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            BorderThickness: =0
+            Color: =RGBA(72, 70, 68, 1)
+            Default: =""
+            Fill: =RGBA(243, 242, 241, 1)
+            FocusedBorderColor: =txtSearchRequest_MyRequest_1.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =32
+            HintText: ="Search team or check-in"
+            HoverFill: =RGBA(230, 230, 230, 1)
+            OnChange: =
+            PaddingLeft: =32
+            PressedBorderColor: =txtSearchRequest_MyRequest_1.HoverBorderColor
+            PressedColor: =txtSearchRequest_MyRequest_1.Color
+            PressedFill: =txtSearchRequest_MyRequest_1.Fill
+            RadiusBottomLeft: =3
+            RadiusBottomRight: =3
+            RadiusTopLeft: =3
+            RadiusTopRight: =3
+            Size: =10.5
+            Width: =210
+            X: =1124
+            Y: =shpRectangle_MyRequest_2.Y+50
+            ZIndex: =4
+
+        shpInnerRectangle_MyRequest_1 As rectangle:
+            DisabledFill: =shpInnerRectangle_MyRequest_1.Fill
+            Fill: =RGBA(249, 248, 247, 1)
+            FocusedBorderColor: =shpInnerRectangle_MyRequest_1.BorderColor
+            Height: =Parent.Height-170
+            HoverFill: =shpInnerRectangle_MyRequest_1.Fill
+            PressedFill: =shpInnerRectangle_MyRequest_1.Fill
+            Width: =shpRectangle_MyRequest_2.Width-64
+            X: =shpRectangle_MyRequest_2.X+32
+            Y: =txtSearchRequest_MyRequest_1.Y+txtSearchRequest_MyRequest_1.Height+16
+            ZIndex: =5
+
+        lblTeamNameHeading_MyRequest_1 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblTeamNameHeading_MyRequest_1.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =16
+            HoverBorderColor: =lblTeamNameHeading_MyRequest_1.BorderColor
+            HoverColor: =lblTeamNameHeading_MyRequest_1.Color
+            HoverFill: =lblTeamNameHeading_MyRequest_1.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblTeamNameHeading_MyRequest_1.BorderColor
+            PressedColor: =lblTeamNameHeading_MyRequest_1.Color
+            PressedFill: =lblTeamNameHeading_MyRequest_1.Fill
+            Size: =9
+            Text: ="Team"
+            Width: =80
+            X: =shpInnerRectangle_MyRequest_1.X+16
+            Y: =shpInnerRectangle_MyRequest_1.Y+15
+            ZIndex: =6
+
+        lblTitleHeading_MyRequest_1 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblTitleHeading_MyRequest_1.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =16
+            HoverBorderColor: =lblTitleHeading_MyRequest_1.BorderColor
+            HoverColor: =lblTitleHeading_MyRequest_1.Color
+            HoverFill: =lblTitleHeading_MyRequest_1.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblTitleHeading_MyRequest_1.BorderColor
+            PressedColor: =lblTitleHeading_MyRequest_1.Color
+            PressedFill: =lblTitleHeading_MyRequest_1.Fill
+            Size: =9
+            Text: ="Check-in title"
+            X: =412
+            Y: =shpInnerRectangle_MyRequest_1.Y+15
+            ZIndex: =7
+
+        lblFrequencyHeading_MyRequest_1 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblFrequencyHeading_MyRequest_1.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =16
+            HoverBorderColor: =lblFrequencyHeading_MyRequest_1.BorderColor
+            HoverColor: =lblFrequencyHeading_MyRequest_1.Color
+            HoverFill: =lblFrequencyHeading_MyRequest_1.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblFrequencyHeading_MyRequest_1.BorderColor
+            PressedColor: =lblFrequencyHeading_MyRequest_1.Color
+            PressedFill: =lblFrequencyHeading_MyRequest_1.Fill
+            Size: =9
+            Text: ="Last check-in"
+            Width: =120
+            X: =802
+            Y: =shpInnerRectangle_MyRequest_1.Y+15
+            ZIndex: =8
+
+        lblDayHeading_MyRequest_1 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblDayHeading_MyRequest_1.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =16
+            HoverBorderColor: =lblDayHeading_MyRequest_1.BorderColor
+            HoverColor: =lblDayHeading_MyRequest_1.Color
+            HoverFill: =lblDayHeading_MyRequest_1.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblDayHeading_MyRequest_1.BorderColor
+            PressedColor: =lblDayHeading_MyRequest_1.Color
+            PressedFill: =lblDayHeading_MyRequest_1.Fill
+            Size: =9
+            Text: ="Check-in counts"
+            Visible: =false
+            Width: =94
+            X: =1022
+            Y: =shpInnerRectangle_MyRequest_1.Y+15
+            ZIndex: =9
+
+        "glryMyRequest_1 As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver4.0'":
+            DisabledBorderColor: =glryMyRequest_1.BorderColor
+            DisabledFill: =glryMyRequest_1.Fill
+            Fill: =RGBA(249, 248, 247, 1)
+            Height: =shpInnerRectangle_MyRequest_1.Height-48
+            HoverBorderColor: =glryMyRequest_1.BorderColor
+            HoverFill: =glryMyRequest_1.Fill
+            Items: |-
+                =//Filter(colGroupById,StartsWith(UniqueIdentifier,txtSearchRequest_MyRequest_1.Text)||StartsWith(First(Remaining.UserCheckinTitle).UserCheckinTitle,txtSearchRequest_MyRequest_1.Text),First(Remaining.UserCheckinTeam).UserCheckinTeam in colMyOwnedGroups.displayName)
+                //Filtering the groupedby collection and sorting by TeamName
+                Sort(Filter(colGroupById,StartsWith(UniqueIdentifier,txtSearchRequest_MyRequest_1.Text)||StartsWith(First(Remaining.UserCheckinTitle).UserCheckinTitle,txtSearchRequest_MyRequest_1.Text),First(Remaining.UserCheckinTeam).UserCheckinTeam in colMyOwnedGroups.displayName),First(Remaining.UserCheckinTeam).UserCheckinTeam,If(locTeamReport,Ascending,Descending))
+            Layout: =Layout.Vertical
+            LoadingSpinnerColor: =glryMyRequest_1.BorderColor
+            PressedBorderColor: =glryMyRequest_1.BorderColor
+            PressedFill: =glryMyRequest_1.Fill
+            TemplatePadding: =0
+            TemplateSize: =48
+            Width: =shpInnerRectangle_MyRequest_1.Width
+            X: =shpInnerRectangle_MyRequest_1.X
+            Y: =190
+            ZIndex: =10
+
+            shpSeparator_MyRequest_1 As rectangle:
+                BorderStyle: =BorderStyle.None
+                DisabledFill: =shpSeparator_MyRequest_1.Fill
+                Fill: =RGBA(239, 239, 239, 1)
+                FocusedBorderColor: =shpSeparator_MyRequest_1.BorderColor
+                Height: =1
+                HoverFill: =shpSeparator_MyRequest_1.Fill
+                OnSelect: =Select(Parent)
+                PressedFill: =shpSeparator_MyRequest_1.Fill
+                Width: =Parent.TemplateWidth
+                Y: =Parent.TemplateHeight - 1
+                ZIndex: =5
+
+            lblFrequency_MyRequest_1 As label:
+                Color: =RGBA(37, 36, 35, 1)
+                FocusedBorderColor: =lblFrequency_MyRequest_1.BorderColor
+                Font: =Font.'Segoe UI'
+                Height: =Parent.TemplateHeight/2.4
+                HoverBorderColor: =lblFrequency_MyRequest_1.BorderColor
+                HoverColor: =lblFrequency_MyRequest_1.Color
+                HoverFill: =lblFrequency_MyRequest_1.Fill
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                PressedBorderColor: =lblFrequency_MyRequest_1.BorderColor
+                PressedColor: =lblFrequency_MyRequest_1.Color
+                PressedFill: =lblFrequency_MyRequest_1.Fill
+                Size: =10.5
+                Text: |-
+                    =Text(DateTimeValue(Last(ThisItem.Remaining.Modified).Modified),"[$-en-Us]dd mmm yyy   hh:mm AM/PM")
+                Width: =180
+                X: =770
+                Y: =14
+                ZIndex: =7
+
+            lblTeamName_MyRequest_1 As label:
+                Color: =RGBA(37, 36, 35, 1)
+                Font: =Font.'Segoe UI'
+                Height: =Parent.TemplateHeight/2.4
+                HoverColor: |-
+                    =Self.Color
+                    //RGBA(98,100,167,100)
+                OnSelect: |
+                    =Set(locScheduledAll,"Scheduled");Navigate('scrnToday''sCheckInReport');
+                PaddingLeft: =0
+                Size: =10.5
+                Text: =If(Len(First(ThisItem.Remaining.UserCheckinTeam).UserCheckinTeam) >35, Concatenate(Left(First(ThisItem.Remaining.UserCheckinTeam).UserCheckinTeam,32),"..."),First(ThisItem.Remaining.UserCheckinTeam).UserCheckinTeam)
+                Tooltip: =
+                Underline: =true
+                Width: =300
+                X: =16
+                Y: =14
+                ZIndex: =11
+
+            lblTitle_MyRequest_1 As label:
+                Color: =RGBA(37, 36, 35, 1)
+                Font: =Font.'Segoe UI'
+                Height: =Parent.TemplateHeight/2.4
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =10.5
+                Text: =If(Len(First(ThisItem.Remaining.UserCheckinTitle).UserCheckinTitle) >45, Concatenate(Left(First(ThisItem.Remaining.UserCheckinTitle).UserCheckinTitle,42),"..."),First(ThisItem.Remaining.UserCheckinTitle).UserCheckinTitle)
+                Width: =320
+                X: =380
+                Y: =14
+                ZIndex: =12
+
+            Label2_7 As label:
+                Color: =RGBA(37, 36, 35, 1)
+                Font: =Font.'Segoe UI'
+                Height: =Parent.TemplateHeight/2.4
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =10.5
+                Text: |-
+                    =//CountIf('UserCheck-ins',UniqueIdentifier=ThisItem.UniqueIdentifier)
+                    //CountRows(Distinct(Filter('UserCheck-ins',UniqueIdentifier=ThisItem.UniqueIdentifier),UserEmail))
+                    CountRows(Distinct(ThisItem.Remaining,UserEmail))
+                Visible: =false
+                Width: =140
+                X: =990
+                Y: =14
+                ZIndex: =17
+
+            Label4_1 As label:
+                Color: =RGBA(37, 36, 35, 1)
+                Font: =Font.'Segoe UI'
+                Height: =Parent.TemplateHeight/2.4
+                OnSelect: =Select(Parent)
+                Size: =10.5
+                Text: =CountRows(Gallery3.AllItems)
+                VerticalAlign: =VerticalAlign.Top
+                Width: =80
+                X: =1164
+                Y: =14
+                ZIndex: =18
+
+            lblUserCheckinSchedule As label:
+                Color: =RGBA(37, 36, 35, 1)
+                Font: =Font.'Segoe UI'
+                Height: =Parent.TemplateHeight/2.4
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =10.5
+                Text: =First(ThisItem.Remaining.UserCheckinSchedule).UserCheckinSchedule
+                Visible: =false
+                Width: =120
+                X: =850
+                Y: =14
+                ZIndex: =19
+
+            "Gallery3 As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver4.0'":
+                Height: =34
+                Items: =If(!IsBlank(lblTeamName_MyRequest_1.Text), Office365Groups.ListGroupMembers(LookUp('Check-inSchedule',CheckinTeamName=First(ThisItem.Remaining.UserCheckinTeam).UserCheckinTeam,TeamId)).value)
+                Layout: =Layout.Vertical
+                TemplatePadding: =0
+                TemplateSize: =Min(160, Self.Height - 60)
+                Width: =187
+                X: =129
+                ZIndex: =20
+
+                Title3 As label:
+                    Height: =0
+                    OnSelect: =Select(Parent)
+                    PaddingBottom: =0
+                    PaddingLeft: =0
+                    PaddingRight: =0
+                    PaddingTop: =0
+                    Text: =DisplayName
+                    VerticalAlign: =VerticalAlign.Top
+                    Width: =0
+                    ZIndex: =2
+
+            lblUniqueIdentifier_MyRequest_1 As label:
+                Height: =26
+                OnSelect: =Select(Parent)
+                Text: =ThisItem.UniqueIdentifier
+                Width: =0
+                X: =132
+                Y: =8
+                ZIndex: =21
+
+            btnoverTeamName As button:
+                BorderColor: =ColorFade(btnoverTeamName.Fill, -15%)
+                BorderStyle: =BorderStyle.None
+                Fill: =RGBA(255, 255, 255, 0)
+                Height: =34
+                HoverBorderColor: =ColorFade(btnoverTeamName.BorderColor, 20%)
+                HoverFill: =RGBA(255,255,255,0)
+                OnSelect: =Set(locScheduledAll,"Scheduled");Navigate('scrnToday''sCheckInReport');
+                PressedBorderColor: =btnoverTeamName.Fill
+                PressedColor: =btnoverTeamName.Fill
+                PressedFill: =RGBA(255,255,255,0)
+                Text: =""
+                Width: =247
+                Y: =7
+                ZIndex: =22
+
+        icnSearch_MyRequest_1 As icon.Search:
+            Color: =RGBA(0, 0, 0, 1)
+            DisabledFill: =icnSearch_MyRequest_1.Fill
+            FocusedBorderColor: =icnSearch_MyRequest_1.BorderColor
+            Height: =16
+            HoverBorderColor: =ColorFade(icnSearch_MyRequest_1.BorderColor, 20%)
+            HoverColor: =ColorFade(icnSearch_MyRequest_1.Color, 20%)
+            HoverFill: =icnSearch_MyRequest_1.Fill
+            Icon: =Icon.Search
+            PressedBorderColor: =ColorFade(icnSearch_MyRequest_1.BorderColor, -20%)
+            PressedColor: =ColorFade(icnSearch_MyRequest_1.Color, -20%)
+            PressedFill: =icnSearch_MyRequest_1.Fill
+            Width: =16
+            X: =txtSearchRequest_MyRequest_1.X+8
+            Y: =txtSearchRequest_MyRequest_1.Y+8
+            ZIndex: =11
+
+        shpDivider_MyRequest_1 As rectangle:
+            DisabledFill: =shpDivider_MyRequest_1.Fill
+            Fill: =RGBA(237, 235, 233, 1)
+            Height: =1
+            HoverFill: =shpDivider_MyRequest_1.Fill
+            PressedFill: =shpDivider_MyRequest_1.Fill
+            Width: =shpInnerRectangle_MyRequest_1.Width
+            X: =shpInnerRectangle_MyRequest_1.X
+            Y: =shpInnerRectangle_MyRequest_1.Y+47
+            ZIndex: =12
+
+        lblTime_MyRequest_1 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblTime_MyRequest_1.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =16
+            HoverBorderColor: =lblTime_MyRequest_1.BorderColor
+            HoverColor: =lblTime_MyRequest_1.Color
+            HoverFill: =lblTime_MyRequest_1.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblTime_MyRequest_1.BorderColor
+            PressedColor: =lblTime_MyRequest_1.Color
+            PressedFill: =lblTime_MyRequest_1.Fill
+            Size: =9
+            Text: ="Total team members"
+            Width: =116
+            X: =1196
+            Y: =shpInnerRectangle_MyRequest_1.Y+15
+            ZIndex: =13
+

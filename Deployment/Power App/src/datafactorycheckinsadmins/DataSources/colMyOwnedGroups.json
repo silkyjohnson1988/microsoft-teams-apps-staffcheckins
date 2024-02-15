@@ -1,0 +1,108 @@
+[
+  {
+    "IsSampleData": false,
+    "IsWritable": true,
+    "Name": "colMyOwnedGroups",
+    "Schema": {
+      "Type": {
+        "EnumString": "",
+        "Kind": "Table",
+        "Name": "Root",
+        "Type": [
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "classification",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "DateTime",
+            "Name": "createdDateTime",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "deletedDateTime",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "description",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "displayName",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "id",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "mail",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "_MinPrimitive",
+            "Name": "mailEnabled",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "mailNickname",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "onPremisesLastSyncDateTime",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "onPremisesSecurityIdentifier",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "onPremisesSyncEnabled",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "DateTime",
+            "Name": "renewedDateTime",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "_MinPrimitive",
+            "Name": "securityEnabled",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "visibility",
+            "Type": []
+          }
+        ]
+      },
+      "Version": "1.289"
+    },
+    "Type": "CollectionDataSourceInfo"
+  }
+]

@@ -1,0 +1,1296 @@
+"'scrnLast7/30DaysCheckInReport' As screen":
+    Fill: =RGBA(249, 248, 247, 1)
+    Height: =Max(App.Height,App.DesignHeight)
+    OnVisible: |-
+        =Reset(Dropdown2_4);Reset(Dropdown2_5);
+        Set(locLastSevenAndThirtyLoader,true);
+        Set(locStaffCheckinTeamReports,StaffCheckinTeamReports.Run(Dropdown2_4.Selected.Value,glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,Dropdown2_5.Selected.Value).responsestaffcheckinteamreports);
+        ClearCollect(colStaffCheckinTeamReports,AddColumns(Split(locStaffCheckinTeamReports,"/n"),
+        "ID",Mid(Result,Find("ID",Result)+4,(Find("UserEmail",Result)-Find("ID",Result)-6)),
+        "UserEmail",Mid(Result,Find("UserEmail",Result)+12,(Find("UserGivenNotes",Result)-Find("UserEmail",Result)-15)),
+        "UserGivenNotes",Mid(Result,Find("UserGivenNotes",Result)+17,(Find("UserCheckinAddress",Result)-Find("UserGivenNotes",Result)-20)),
+        "UserCheckinAddress",Mid(Result,Find("UserCheckinAddress",Result)+21,(Find("UserCheckinTeam",Result)-Find("UserCheckinAddress",Result)-24)),
+        "UserCheckinTeam",Mid(Result,Find("UserCheckinTeam",Result)+18,(Find("UserCheckinTitle",Result)-Find("UserCheckinTeam",Result)-21)),
+        "UserCheckinTitle",Mid(Result,Find("UserCheckinTitle",Result)+19,(Find("UniqueIdentifier",Result)-Find("UserCheckinTitle",Result)-22)),
+        "UniqueIdentifier",Mid(Result,Find("UniqueIdentifier",Result)+19,(Find("UserCheckinSchedule",Result)-Find("UniqueIdentifier",Result)-22)),"UserCheckinSchedule",Mid(Result,Find("UserCheckinSchedule",Result)+22,(Find("Created",Result)-Find("UserCheckinSchedule",Result)-25)),
+        "Created",Mid(Result,Find("Created",Result)+10,(Find("Modified",Result)-Find("Created",Result)-13)),
+        "Modified",Mid(Result,Find("Modified",Result)+11,(Find("UserCreatedDate",Result)-Find("Modified",Result)-14)),
+        "UserCreatedDate",Mid(Result,Find("UserCreatedDate",Result)+18,(Find("UserTitle",Result)-Find("UserCreatedDate",Result)-21)),
+        "UserTitle",Mid(Result,Find("UserTitle",Result)+12,(Find("ChangedByEmail",Result)-Find("UserTitle",Result)-15)),
+        "UserName",Mid(Result,Find("UserName",Result)+11,(Find("DisplayName",Result)-Find("UserName",Result)-14))));
+        ClearCollect(colLast7and30days,GroupBy(colStaffCheckinTeamReports,"UserEmail","grpUserLast7and30"));
+        Set(locLastSevenAndThirtyLoader,false);
+        Set(locUserGalleryLast7Days,true);
+    Orientation: =If('scrnLast7/30DaysCheckInReport'.Width < 'scrnLast7/30DaysCheckInReport'.Height, Layout.Vertical, Layout.Horizontal)
+    Size: =1 + CountRows(App.SizeBreakpoints) - CountIf(App.SizeBreakpoints, Value >= 'scrnLast7/30DaysCheckInReport'.Width)
+    Width: =Max(App.Width, App.DesignWidth)
+
+    Button3_4 As button:
+        BorderColor: =ColorFade(Button3_4.Fill, -15%)
+        BorderStyle: =BorderStyle.None
+        BorderThickness: =0
+        Color: =RGBA(37, 36, 35, 1)
+        Fill: =RGBA(249, 248, 247, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Normal
+        HoverBorderColor: =ColorFade(Button3_4.BorderColor, 20%)
+        HoverColor: =RGBA(0, 0, 0, 1)
+        HoverFill: =RGBA(249, 248, 247, 1)
+        OnSelect: =Navigate(scrnCreatedCheckIn);
+        PressedBorderColor: =Button3_4.Fill
+        PressedColor: =RGBA(0, 0, 0, 1)
+        PressedFill: =RGBA(249, 248, 247, 1)
+        RadiusBottomLeft: =3
+        RadiusBottomRight: =3
+        RadiusTopLeft: =3
+        RadiusTopRight: =3
+        Size: =10.5
+        Text: ="Manage"
+        Width: =142
+        X: =Parent.Width-Button4_4.Width-Button3_4.Width
+        ZIndex: =13
+
+    Button4_4 As button:
+        BorderColor: =ColorFade(Button4_4.Fill, -15%)
+        BorderStyle: =BorderStyle.None
+        BorderThickness: =0
+        Color: =RGBA(37, 36, 35, 1)
+        Fill: =RGBA(255, 255, 255, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Bold
+        HoverBorderColor: =ColorFade(Button4_4.BorderColor, 20%)
+        HoverColor: =RGBA(37, 36, 35, 1)
+        HoverFill: =RGBA(255, 255, 255, 1)
+        OnSelect: =
+        PressedBorderColor: =Button4_4.Fill
+        PressedColor: =RGBA(37, 36, 35, 1)
+        PressedFill: =RGBA(255, 255, 255, 1)
+        RadiusBottomLeft: =3
+        RadiusBottomRight: =3
+        RadiusTopLeft: =3
+        RadiusTopRight: =3
+        Size: =10.5
+        Text: ="Reports"
+        Width: =142
+        X: =Parent.Width-Button4_4.Width
+        ZIndex: =14
+
+    btnExport_1 As button:
+        BorderColor: =ColorFade(btnExport_1.Fill, -15%)
+        BorderStyle: =BorderStyle.None
+        BorderThickness: =0
+        DisplayMode: =If(Value(Label11_1.Text)>0,DisplayMode.Edit,DisplayMode.Disabled)
+        Fill: =RGBA(98, 100, 167, 1)
+        FocusedBorderColor: =btnExport_1.BorderColor
+        Font: =Font.'Segoe UI'
+        Height: =32
+        HoverBorderColor: =ColorFade(btnExport_1.BorderColor, 20%)
+        HoverFill: =RGBA(76, 80, 158, 1)
+        OnSelect: |-
+            =//CheckinUsersReportExport.Run(Concatenate(glryMyRequest_1.Selected.lblTeamName_MyRequest_1.Text,glryMyRequest_1.Selected.lblTitle_MyRequest_1.Text),If(Dropdown2_4.Selected.Value="Last 7 days",(Today()-7),If(Dropdown2_4.Selected.Value="Last 30 days",(Today()-30),Today())),Today());
+            //Notify("Details exported successfully to OneDrive",NotificationType.Success)
+            CheckinUsersReportExport.Run(Concatenate(glryMyRequest_1.Selected.lblTeamName_MyRequest_1.Text,glryMyRequest_1.Selected.lblTitle_MyRequest_1.Text),If(Dropdown2_4.Selected.Value="Last 7 days",(DateAdd(Now(),TimeZoneOffset(),Minutes)-7),If(Dropdown2_4.Selected.Value="Last 30 days",(DateAdd(Now(),TimeZoneOffset(),Minutes)-30),DateAdd(Now(),TimeZoneOffset(),Minutes))),DateAdd(Now(),TimeZoneOffset(),Minutes));
+            Notify("Details exported successfully to OneDrive",NotificationType.Success)
+        PressedBorderColor: =btnExport_1.Fill
+        PressedColor: =RGBA(255, 255, 255, 1)
+        PressedFill: =RGBA(69, 75, 146, 1)
+        RadiusBottomLeft: =3
+        RadiusBottomRight: =3
+        RadiusTopLeft: =3
+        RadiusTopRight: =3
+        Size: =10.5
+        Text: ="Export"
+        Width: =112
+        X: =shpRectangle_MyRequest_4.X+shpRectangle_MyRequest_4.Width-32-btnExport_1.Width
+        Y: ='shpLareRectangle_Check-inRequests'.Y+50
+        ZIndex: =15
+
+    Dropdown2_4 As dropdown:
+        BorderStyle: =BorderStyle.None
+        BorderThickness: =0
+        ChevronBackground: =RGBA(243, 242, 241, 1)
+        ChevronFill: =RGBA(0, 0, 0, 1)
+        ChevronHoverBackground: =RGBA(243, 242, 241, 1)
+        ChevronHoverFill: =RGBA(0, 0, 0, 1)
+        Color: =RGBA(37, 36, 36, 1)
+        Default: =locdropdownvalue
+        Fill: =RGBA(243, 242, 241, 1)
+        Font: =Font.'Segoe UI'
+        Height: =32
+        HoverBorderColor: =RGBA(243, 242, 241, 1)
+        HoverFill: =RGBA(243, 242, 241, 1)
+        Items: =["Today","Last 7 days","Last 30 days"]
+        OnChange: |-
+            =Set(locScheduledAll,Dropdown2_5.Selected.Value);
+            If(Dropdown2_4.Selected.Value="Today",Navigate('scrnToday''sCheckInReport'));
+            Set(locLastSevenAndThirtyLoader,true);
+            Set(locStaffCheckinTeamReports,StaffCheckinTeamReports.Run(Dropdown2_4.Selected.Value,glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,Dropdown2_5.Selected.Value).responsestaffcheckinteamreports);
+            ClearCollect(colStaffCheckinTeamReports,AddColumns(Split(locStaffCheckinTeamReports,"/n"),
+            "ID",Mid(Result,Find("ID",Result)+4,(Find("UserEmail",Result)-Find("ID",Result)-6)),
+            "UserEmail",Mid(Result,Find("UserEmail",Result)+12,(Find("UserGivenNotes",Result)-Find("UserEmail",Result)-15)),
+            "UserGivenNotes",Mid(Result,Find("UserGivenNotes",Result)+17,(Find("UserCheckinAddress",Result)-Find("UserGivenNotes",Result)-20)),
+            "UserCheckinAddress",Mid(Result,Find("UserCheckinAddress",Result)+21,(Find("UserCheckinTeam",Result)-Find("UserCheckinAddress",Result)-24)),
+            "UserCheckinTeam",Mid(Result,Find("UserCheckinTeam",Result)+18,(Find("UserCheckinTitle",Result)-Find("UserCheckinTeam",Result)-21)),
+            "UserCheckinTitle",Mid(Result,Find("UserCheckinTitle",Result)+19,(Find("UniqueIdentifier",Result)-Find("UserCheckinTitle",Result)-22)),
+            "UniqueIdentifier",Mid(Result,Find("UniqueIdentifier",Result)+19,(Find("UserCheckinSchedule",Result)-Find("UniqueIdentifier",Result)-22)),"UserCheckinSchedule",Mid(Result,Find("UserCheckinSchedule",Result)+22,(Find("Created",Result)-Find("UserCheckinSchedule",Result)-25)),
+            "Created",Mid(Result,Find("Created",Result)+10,(Find("Modified",Result)-Find("Created",Result)-13)),
+            "Modified",Mid(Result,Find("Modified",Result)+11,(Find("UserCreatedDate",Result)-Find("Modified",Result)-14)),
+            "UserCreatedDate",Mid(Result,Find("UserCreatedDate",Result)+18,(Find("UserTitle",Result)-Find("UserCreatedDate",Result)-21)),
+            "UserTitle",Mid(Result,Find("UserTitle",Result)+12,(Find("ChangedByEmail",Result)-Find("UserTitle",Result)-15)),
+            "UserName",Mid(Result,Find("UserName",Result)+11,(Find("DisplayName",Result)-Find("UserName",Result)-14))));
+            ClearCollect(colLast7and30days,GroupBy(colStaffCheckinTeamReports,"UserEmail","grpUserLast7and30"));
+            Set(locLastSevenAndThirtyLoader,false);
+        OnSelect: |-
+            =/* Set(locStaffCheckinTeamReports,StaffCheckinTeamReports.Run(Dropdown2_4.Selected.Value,glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,Dropdown2_5.Selected.Value).responsestaffcheckinteamreports);
+            ClearCollect(colStaffCheckinTeamReports,AddColumns(Split(locStaffCheckinTeamReports,"/n"),
+            "ID",Mid(Result,Find("ID",Result)+4,(Find("UserEmail",Result)-Find("ID",Result)-6)),
+            "UserEmail",Mid(Result,Find("UserEmail",Result)+12,(Find("UserGivenNotes",Result)-Find("UserEmail",Result)-15)),
+            "UserGivenNotes",Mid(Result,Find("UserGivenNotes",Result)+17,(Find("UserCheckinAddress",Result)-Find("UserGivenNotes",Result)-20)),
+            "UserCheckinAddress",Mid(Result,Find("UserCheckinAddress",Result)+21,(Find("UserCheckinTeam",Result)-Find("UserCheckinAddress",Result)-24)),
+            "UserCheckinTeam",Mid(Result,Find("UserCheckinTeam",Result)+18,(Find("UserCheckinTitle",Result)-Find("UserCheckinTeam",Result)-21)),
+            "UserCheckinTitle",Mid(Result,Find("UserCheckinTitle",Result)+19,(Find("UniqueIdentifier",Result)-Find("UserCheckinTitle",Result)-22)),
+            "UniqueIdentifier",Mid(Result,Find("UniqueIdentifier",Result)+19,(Find("UserCheckinSchedule",Result)-Find("UniqueIdentifier",Result)-22)),"UserCheckinSchedule",Mid(Result,Find("UserCheckinSchedule",Result)+22,(Find("Created",Result)-Find("UserCheckinSchedule",Result)-25)),
+            "Created",Mid(Result,Find("Created",Result)+10,(Find("Modified",Result)-Find("Created",Result)-13)),
+            "Modified",Mid(Result,Find("Modified",Result)+11,(Find("UserCreatedDate",Result)-Find("Modified",Result)-14)),
+            "UserCreatedDate",Mid(Result,Find("UserCreatedDate",Result)+18,(Find("UserTitle",Result)-Find("UserCreatedDate",Result)-21)),
+            "UserTitle",Mid(Result,Find("UserTitle",Result)+12,(Find("ChangedByEmail",Result)-Find("UserTitle",Result)-15))));
+            ClearCollect(colLast7and30days,GroupBy(colStaffCheckinTeamReports,"UserEmail","grpUserLast7and30"));
+            */
+            true
+        PaddingLeft: =12
+        PressedBorderColor: =Dropdown2_4.HoverBorderColor
+        PressedColor: =RGBA(0, 0, 0, 1)
+        PressedFill: =RGBA(243, 242, 241, 1)
+        SelectionColor: =RGBA(0, 0, 0, 1)
+        SelectionFill: =RGBA(243, 242, 241, 1)
+        Size: =10.5
+        Width: =126
+        X: =txtSearchRequest_MyRequest_3.X-8-Dropdown2_4.Width
+        Y: =shpRectangle_MyRequest_4.Y+50
+        ZIndex: =16
+
+    Dropdown2_5 As dropdown:
+        BorderStyle: =BorderStyle.None
+        BorderThickness: =0
+        ChevronBackground: =RGBA(243, 242, 241, 1)
+        ChevronFill: =RGBA(0, 0, 0, 1)
+        ChevronHoverBackground: =RGBA(243, 242, 241, 1)
+        ChevronHoverFill: =RGBA(0, 0, 0, 1)
+        Color: =RGBA(37, 36, 36, 1)
+        Default: =First(glryMyRequest_1.Selected.Remaining.UserCheckinSchedule).UserCheckinSchedule
+        DisplayMode: =DisplayMode.View
+        Fill: =RGBA(243, 242, 241, 1)
+        Font: =Font.'Segoe UI'
+        Height: =32
+        HoverBorderColor: =RGBA(243, 242, 241, 1)
+        HoverFill: =RGBA(243, 242, 241, 1)
+        Items: =["Scheduled","Ad-hoc"]
+        OnChange: |+
+            =Set(locScheduledAll,Dropdown2_5.Selected.Value);
+            Set(locStaffCheckinTeamReports,StaffCheckinTeamReports.Run(Dropdown2_4.Selected.Value,glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,Dropdown2_5.Selected.Value).responsestaffcheckinteamreports);
+            ClearCollect(colStaffCheckinTeamReports,AddColumns(Split(locStaffCheckinTeamReports,"/n"),
+            "ID",Mid(Result,Find("ID",Result)+4,(Find("UserEmail",Result)-Find("ID",Result)-6)),
+            "UserEmail",Mid(Result,Find("UserEmail",Result)+12,(Find("UserGivenNotes",Result)-Find("UserEmail",Result)-15)),
+            "UserGivenNotes",Mid(Result,Find("UserGivenNotes",Result)+17,(Find("UserCheckinAddress",Result)-Find("UserGivenNotes",Result)-20)),
+            "UserCheckinAddress",Mid(Result,Find("UserCheckinAddress",Result)+21,(Find("UserCheckinTeam",Result)-Find("UserCheckinAddress",Result)-24)),
+            "UserCheckinTeam",Mid(Result,Find("UserCheckinTeam",Result)+18,(Find("UserCheckinTitle",Result)-Find("UserCheckinTeam",Result)-21)),
+            "UserCheckinTitle",Mid(Result,Find("UserCheckinTitle",Result)+19,(Find("UniqueIdentifier",Result)-Find("UserCheckinTitle",Result)-22)),
+            "UniqueIdentifier",Mid(Result,Find("UniqueIdentifier",Result)+19,(Find("UserCheckinSchedule",Result)-Find("UniqueIdentifier",Result)-22)),"UserCheckinSchedule",Mid(Result,Find("UserCheckinSchedule",Result)+22,(Find("Created",Result)-Find("UserCheckinSchedule",Result)-25)),
+            "Created",Mid(Result,Find("Created",Result)+10,(Find("Modified",Result)-Find("Created",Result)-13)),
+            "Modified",Mid(Result,Find("Modified",Result)+11,(Find("UserCreatedDate",Result)-Find("Modified",Result)-14)),
+            "UserCreatedDate",Mid(Result,Find("UserCreatedDate",Result)+18,(Find("UserTitle",Result)-Find("UserCreatedDate",Result)-21)),
+            "UserTitle",Mid(Result,Find("UserTitle",Result)+12,(Find("ChangedByEmail",Result)-Find("UserTitle",Result)-15)),
+            "UserName",Mid(Result,Find("UserName",Result)+11,(Find("DisplayName",Result)-Find("UserName",Result)-14))));
+            ClearCollect(colLast7and30days,GroupBy(colStaffCheckinTeamReports,"UserEmail","grpUserLast7and30"));
+            
+        OnSelect: |-
+            =/* Set(locStaffCheckinTeamReports,StaffCheckinTeamReports.Run(Dropdown2_4.Selected.Value,glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,Dropdown2_5.Selected.Value).responsestaffcheckinteamreports);
+            ClearCollect(colStaffCheckinTeamReports,AddColumns(Split(locStaffCheckinTeamReports,"/n"),
+            "ID",Mid(Result,Find("ID",Result)+4,(Find("UserEmail",Result)-Find("ID",Result)-6)),
+            "UserEmail",Mid(Result,Find("UserEmail",Result)+12,(Find("UserGivenNotes",Result)-Find("UserEmail",Result)-15)),
+            "UserGivenNotes",Mid(Result,Find("UserGivenNotes",Result)+17,(Find("UserCheckinAddress",Result)-Find("UserGivenNotes",Result)-20)),
+            "UserCheckinAddress",Mid(Result,Find("UserCheckinAddress",Result)+21,(Find("UserCheckinTeam",Result)-Find("UserCheckinAddress",Result)-24)),
+            "UserCheckinTeam",Mid(Result,Find("UserCheckinTeam",Result)+18,(Find("UserCheckinTitle",Result)-Find("UserCheckinTeam",Result)-21)),
+            "UserCheckinTitle",Mid(Result,Find("UserCheckinTitle",Result)+19,(Find("UniqueIdentifier",Result)-Find("UserCheckinTitle",Result)-22)),
+            "UniqueIdentifier",Mid(Result,Find("UniqueIdentifier",Result)+19,(Find("UserCheckinSchedule",Result)-Find("UniqueIdentifier",Result)-22)),"UserCheckinSchedule",Mid(Result,Find("UserCheckinSchedule",Result)+22,(Find("Created",Result)-Find("UserCheckinSchedule",Result)-25)),
+            "Created",Mid(Result,Find("Created",Result)+10,(Find("Modified",Result)-Find("Created",Result)-13)),
+            "Modified",Mid(Result,Find("Modified",Result)+11,(Find("UserCreatedDate",Result)-Find("Modified",Result)-14)),
+            "UserCreatedDate",Mid(Result,Find("UserCreatedDate",Result)+18,(Find("UserTitle",Result)-Find("UserCreatedDate",Result)-21)),
+            "UserTitle",Mid(Result,Find("UserTitle",Result)+12,(Find("ChangedByEmail",Result)-Find("UserTitle",Result)-15))));
+            ClearCollect(colLast7and30days,GroupBy(colStaffCheckinTeamReports,"UserEmail","grpUserLast7and30"));
+            */
+            true
+        PaddingLeft: =12
+        PressedBorderColor: =Dropdown2_5.HoverBorderColor
+        PressedColor: =RGBA(0, 0, 0, 1)
+        PressedFill: =RGBA(243, 242, 241, 1)
+        SelectionColor: =RGBA(0, 0, 0, 1)
+        SelectionFill: =RGBA(243, 242, 241, 1)
+        Size: =10.5
+        Visible: =false
+        Width: =115
+        X: =Dropdown2_4.X-8-Dropdown2_5.Width
+        Y: =shpRectangle_MyRequest_4.Y+50
+        ZIndex: =17
+
+    lblIndividualTeamName_1 As label:
+        Color: =RGBA(37, 36, 35, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Semibold
+        Height: =24
+        PaddingLeft: =0
+        Size: =13.5
+        Text: =Concatenate(glryMyRequest_1.Selected.lblTeamName_MyRequest_1.Text,", ",glryMyRequest_1.Selected.lblTitle_MyRequest_1.Text)
+        Width: =600
+        X: =shpRectangle_MyRequest_4.X+150
+        Y: =shpRectangle_MyRequest_4.Y+22
+        ZIndex: =18
+
+    Label5_1 As label:
+        Align: =Align.Right
+        Color: =RGBA(29, 28, 0, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Bold
+        Height: =19
+        PaddingRight: =0
+        Size: =10.5
+        Text: ="Total"
+        Width: =38
+        X: =shpRectangle_MyRequest_4.X+35
+        Y: =Dropdown2_5.Y+Dropdown2_5.Height+70
+        ZIndex: =19
+
+    Label6_1 As label:
+        Color: =RGBA(65, 64, 63, 1)
+        Font: =Font.'Segoe UI'
+        Height: =19
+        PaddingLeft: =0
+        Size: =10.5
+        Text: ="check-ins"
+        Width: =64
+        X: =Label5_1.X+Label5_1.Width+3
+        Y: =Dropdown2_5.Y+Dropdown2_5.Height+70
+        ZIndex: =20
+
+    Label7_1 As label:
+        Align: =Align.Right
+        Color: =RGBA(29, 28, 0, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Bold
+        Height: =19
+        PaddingRight: =0
+        Size: =10.5
+        Text: ="Team members"
+        Width: =110
+        X: =Label6_1.X+Label6_1.Width+120
+        Y: =Dropdown2_5.Y+Dropdown2_5.Height+70
+        ZIndex: =21
+
+    Label8_1 As label:
+        Color: =RGBA(65, 64, 63, 1)
+        Font: =Font.'Segoe UI'
+        Height: =19
+        PaddingLeft: =0
+        Size: =10.5
+        Text: ="responded"
+        Width: =72
+        X: =Label7_1.X+Label7_1.Width+3
+        Y: =Dropdown2_5.Y+Dropdown2_5.Height+70
+        ZIndex: =22
+
+    Label9_1 As label:
+        Align: =Align.Right
+        Color: =RGBA(65, 64, 63, 1)
+        Font: =Font.'Segoe UI'
+        Height: =19
+        PaddingRight: =0
+        Size: =10.5
+        Text: ="Total"
+        Width: =38
+        X: =Label8_1.X+Label8_1.Width+130
+        Y: =Dropdown2_5.Y+Dropdown2_5.Height+70
+        ZIndex: =23
+
+    Label10_1 As label:
+        Color: =RGBA(29, 28, 0, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Bold
+        Height: =19
+        PaddingLeft: =0
+        Size: =10.5
+        Text: ="team members"
+        Width: =108
+        X: =Label9_1.X+Label9_1.Width+3
+        Y: =Dropdown2_5.Y+Dropdown2_5.Height+70
+        ZIndex: =24
+
+    Label11_1 As label:
+        Align: =Align.Center
+        Color: =RGBA(54, 177, 75, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Bold
+        Height: =48
+        Size: =27
+        Text: |-
+            =//CountRows(Filter('UserCheck-ins',UserCheckinTeam=glryMyRequest_1.Selected.lblTeamName_MyRequest_1.Text))
+            //If(!IsBlank(lblUserEmail.Text),CountRows(glryMyRequest_3.AllItems),If(IsBlank(lblUserEmail.Text),"0"))
+            
+            If(!IsBlank(lblUserEmail.Text),CountRows(colStaffCheckinTeamReports.UserEmail),If(IsBlank(lblUserEmail.Text),Value(0)))
+        Width: =104
+        X: =shpRectangle_MyRequest_4.X+35
+        Y: =Dropdown2_5.Y+Dropdown2_5.Height+16
+        ZIndex: =25
+
+    Label12_1 As label:
+        Align: =Align.Center
+        Color: =RGBA(57, 97, 179, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Bold
+        Height: =48
+        Size: =27
+        Text: |-
+            =//CountRows(Distinct(Filter('UserCheck-ins',UniqueIdentifier=glryMyRequest_1.Selected.UniqueIdentifier),UserEmail))
+            
+            If(!IsBlank(lblUserEmail.Text),CountRows(Distinct(glryMyRequest_3.AllItems,UserEmail)),If(IsBlank(lblUserEmail.Text),"0"))
+        Width: =195
+        X: =Label11_1.X+Label11_1.Width+121
+        Y: =Dropdown2_5.Y+Dropdown2_5.Height+16
+        ZIndex: =26
+
+    Label13_1 As label:
+        Align: =Align.Center
+        Color: =RGBA(116, 116, 116, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Bold
+        Height: =48
+        Size: =27
+        Text: =CountRows(Gallery3.AllItems)
+        Width: =148
+        X: =Label12_1.X+Label12_1.Width+120
+        Y: =Dropdown2_5.Y+Dropdown2_5.Height+16
+        ZIndex: =27
+
+    Label16_2 As label:
+        Color: =RGBA(37, 36, 35, 1)
+        Font: =Font.'Segoe UI'
+        FontWeight: =FontWeight.Semibold
+        Height: =20
+        PaddingLeft: =0
+        Size: =10.5
+        Text: =
+        Visible: =AllDetailsOfUser
+        Width: =300
+        X: =520
+        Y: =178
+        ZIndex: =28
+
+    Icon4 As icon.ChevronRight:
+        Color: =RGBA(0, 0, 0, 1)
+        DisabledFill: =Icon4.Fill
+        Height: =12
+        HoverBorderColor: =ColorFade(Icon4.BorderColor, 20%)
+        HoverColor: =ColorFade(Icon4.Color, 20%)
+        HoverFill: =Icon4.Fill
+        Icon: =Icon.ChevronRight
+        PressedBorderColor: =ColorFade(Icon4.BorderColor, -20%)
+        PressedColor: =ColorFade(Icon4.Color, -20%)
+        PressedFill: =Icon4.Fill
+        Width: =12
+        X: =130
+        Y: =70
+        ZIndex: =29
+
+    Label27 As label:
+        Text: =DateAdd(Now(),TimeZoneOffset(),Minutes)
+        Visible: =false
+        X: =249
+        Y: =93
+        ZIndex: =30
+
+    Label24_1 As label:
+        Align: =Align.Center
+        Color: |-
+            =//RGBA(37, 36, 35, 1)
+            If(glryMyRequest_1.Selected.lblUserCheckinSchedule.Text="Scheduled",RGBA(57,97,179,1),RGBA(196,49,75,1))
+        Fill: |-
+            =//RGBA(0, 0, 0, 0)
+            //rgba(230,238,255,1)rgba(255,229,234,1)
+            
+            If(glryMyRequest_1.Selected.lblUserCheckinSchedule.Text="Scheduled",RGBA(230,238,255,1),RGBA(255,229,234,1))
+        Font: =Font.'Segoe UI'
+        Height: =20
+        Size: =9
+        Text: =glryMyRequest_1.Selected.lblUserCheckinSchedule.Text
+        Width: =100
+        X: =shpRectangle_MyRequest_3.X+32
+        Y: =shpRectangle_MyRequest_3.Y+56
+        ZIndex: =31
+
+    lblFrequencyHeading_MyRequest_3 As label:
+        Color: =RGBA(72, 70, 68, 1)
+        FocusedBorderColor: =lblFrequencyHeading_MyRequest_3.BorderColor
+        Font: =Font.'Segoe UI'
+        Height: =16
+        HoverBorderColor: =lblFrequencyHeading_MyRequest_3.BorderColor
+        HoverColor: =lblFrequencyHeading_MyRequest_3.Color
+        HoverFill: =lblFrequencyHeading_MyRequest_3.Fill
+        PaddingLeft: =0
+        PressedBorderColor: =lblFrequencyHeading_MyRequest_3.BorderColor
+        PressedColor: =lblFrequencyHeading_MyRequest_3.Color
+        PressedFill: =lblFrequencyHeading_MyRequest_3.Fill
+        Size: =9
+        Text: ="Last check-in"
+        Width: =120
+        X: =947
+        Y: =shpInnerRectangle_MyRequest_3.Y+15
+        ZIndex: =38
+
+    "'icnUp_UserName_Last7/30Days' As icon.ChevronUp":
+        Color: =RGBA(0, 0, 0, 1)
+        DisabledFill: ='icnUp_UserName_Last7/30Days'.Fill
+        Height: =16
+        HoverBorderColor: =ColorFade('icnUp_UserName_Last7/30Days'.BorderColor, 20%)
+        HoverColor: =ColorFade('icnUp_UserName_Last7/30Days'.Color, 20%)
+        HoverFill: ='icnUp_UserName_Last7/30Days'.Fill
+        Icon: =Icon.ChevronUp
+        OnSelect: |-
+            =UpdateContext({locLast7Sort:!locLast7Sort})
+        PressedBorderColor: =ColorFade('icnUp_UserName_Last7/30Days'.BorderColor, -20%)
+        PressedColor: =ColorFade('icnUp_UserName_Last7/30Days'.Color, -20%)
+        PressedFill: ='icnUp_UserName_Last7/30Days'.Fill
+        Visible: =locLast7Sort
+        Width: =12
+        X: =86
+        Y: =shpInnerRectangle_MyRequest_3.Y+15
+        ZIndex: =40
+
+    "'icnDown_UserName_Last7/30Days' As icon.ChevronDown":
+        Color: =RGBA(0, 0, 0, 1)
+        DisabledFill: ='icnDown_UserName_Last7/30Days'.Fill
+        Height: =16
+        HoverBorderColor: =ColorFade('icnDown_UserName_Last7/30Days'.BorderColor, 20%)
+        HoverColor: =ColorFade('icnDown_UserName_Last7/30Days'.Color, 20%)
+        HoverFill: ='icnDown_UserName_Last7/30Days'.Fill
+        Icon: =Icon.ChevronDown
+        OnSelect: |-
+            =UpdateContext({locLast7Sort:!locLast7Sort})
+        PressedBorderColor: =ColorFade('icnDown_UserName_Last7/30Days'.BorderColor, -20%)
+        PressedColor: =ColorFade('icnDown_UserName_Last7/30Days'.Color, -20%)
+        PressedFill: ='icnDown_UserName_Last7/30Days'.Fill
+        Visible: =!locLast7Sort
+        Width: =12
+        X: =86
+        Y: =shpInnerRectangle_MyRequest_3.Y+15
+        ZIndex: =41
+
+    Image10_2 As image:
+        Height: =32
+        HoverBorderColor: =ColorFade(Image10_2.BorderColor, 20%)
+        HoverFill: =ColorFade(Image10_2.Fill, 20%)
+        Image: =If(AllDetailsOfUser, If(IsBlank(glryMyRequest_3.Selected.grpUserLast7and30.UserTitle),'dummy_user@1x',If(Office365Users.UserPhotoMetadata(glryMyRequest_3.Selected.UserEmail).HasPhoto=true,Office365Users.UserPhoto(glryMyRequest_3.Selected.UserEmail),'dummy_user@1x')))
+        OnSelect: =
+        PressedBorderColor: =ColorFade(Image10_2.BorderColor, -20%)
+        PressedFill: =ColorFade(Image10_2.Fill, -20%)
+        RadiusBottomLeft: =Image10_2.Height
+        RadiusBottomRight: =Image10_2.Height
+        RadiusTopLeft: =Image10_2.Height
+        RadiusTopRight: =Image10_2.Height
+        Visible: =AllDetailsOfUser
+        Width: =32
+        X: =Image5_2.X
+        Y: =Image5_2.Y+Image5_2.Height+23
+        ZIndex: =46
+
+    shpScreenLoader_3 As rectangle:
+        DisabledFill: =shpScreenLoader_3.Fill
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =768
+        HoverFill: =shpScreenLoader_3.Fill
+        PressedFill: =shpScreenLoader_3.Fill
+        Visible: =locLastSevenAndThirtyLoader
+        Width: =1366
+        ZIndex: =47
+
+    imgScreenLoader_3 As image:
+        HoverBorderColor: =ColorFade(imgScreenLoader_3.BorderColor, 20%)
+        HoverFill: =ColorFade(imgScreenLoader_3.Fill, 20%)
+        Image: =Assets0Images00004
+        PressedBorderColor: =ColorFade(imgScreenLoader_3.BorderColor, -20%)
+        PressedFill: =ColorFade(imgScreenLoader_3.Fill, -20%)
+        Visible: =locLastSevenAndThirtyLoader
+        X: =611
+        Y: =323
+        ZIndex: =48
+
+    btnoverDasgboardLast7 As button:
+        BorderColor: =ColorFade(btnoverDasgboardLast7.Fill, -15%)
+        BorderStyle: =BorderStyle.None
+        Fill: =RGBA(255, 255, 255, 0)
+        Height: =34
+        HoverBorderColor: =ColorFade(btnoverDasgboardLast7.BorderColor, 20%)
+        HoverFill: =RGBA(255,255,255,0)
+        OnSelect: =Navigate(scrnCheckInReport);
+        PressedBorderColor: =btnoverDasgboardLast7.Fill
+        PressedColor: =btnoverDasgboardLast7.Fill
+        PressedFill: =RGBA(255,255,255,0)
+        Text: =""
+        Width: =130
+        X: =12
+        Y: =48
+        ZIndex: =49
+
+    "'grpNoCheck-ins_Last7/30Days' As group":
+        Height: =5
+        Width: =5
+        X: =52
+        Y: =247
+        ZIndex: =50
+
+        Rectangle4_1 As rectangle:
+            DisabledFill: =Rectangle4_1.Fill
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =shpInnerRectangle_MyRequest_2.Height
+            HoverFill: =Rectangle4_1.Fill
+            PressedFill: =Rectangle4_1.Fill
+            Visible: =((locUserGalleryLast7Days) && IsBlank(lblUserName_MyRequest_3.Text) )
+            Width: =shpInnerRectangle_MyRequest_2.Width
+            X: =shpInnerRectangle_MyRequest_2.X
+            Y: =shpInnerRectangle_MyRequest_2.Y
+            ZIndex: =42
+
+        Label25_1 As label:
+            Align: =Align.Center
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Bold
+            Size: =13.5
+            Text: ="There are no check-ins"
+            Visible: =((locUserGalleryLast7Days) && IsBlank(lblUserName_MyRequest_3.Text) )
+            Width: =shpInnerRectangle_MyRequest_2.Width
+            X: =shpInnerRectangle_MyRequest_2.X
+            Y: =Image16_1.Y+Image16_1.Height+16
+            ZIndex: =43
+
+        Image16_1 As image:
+            Height: =150
+            HoverBorderColor: =ColorFade(Image16_1.BorderColor, 20%)
+            HoverFill: =ColorFade(Image16_1.Fill, 20%)
+            Image: =visibility
+            ImagePosition: =ImagePosition.Fill
+            PressedBorderColor: =ColorFade(Image16_1.BorderColor, -20%)
+            PressedFill: =ColorFade(Image16_1.Fill, -20%)
+            Visible: =((locUserGalleryLast7Days) && IsBlank(lblUserName_MyRequest_3.Text) )
+            Width: =150
+            X: =Rectangle4_1.X+(Rectangle4_1.Width/2)-(Image16_1.Width/2)
+            Y: =Rectangle4_1.Y+(Rectangle4_1.Height/2)-(Image16_1.Height/2)-40
+            ZIndex: =44
+
+    grpMyRequests_3 As group:
+        Height: =5
+        Width: =5
+        X: =80
+        Y: =80
+        ZIndex: =64
+
+        shpRectangle_MyRequest_4 As rectangle:
+            DisabledFill: =shpRectangle_MyRequest_4.Fill
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =Parent.Height-40
+            HoverFill: =shpRectangle_MyRequest_4.Fill
+            PressedFill: =shpRectangle_MyRequest_4.Fill
+            Width: =1366
+            Y: =Button4_4.Y+Button4_4.Height
+            ZIndex: =1
+
+        lblHeading_MyRequest_3 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblHeading_MyRequest_3.BorderColor
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =24
+            HoverBorderColor: =lblHeading_MyRequest_3.BorderColor
+            HoverColor: =lblHeading_MyRequest_3.Color
+            HoverFill: =lblHeading_MyRequest_3.Fill
+            OnSelect: =Navigate(scrnCheckInReport);
+            PaddingLeft: =0
+            PressedBorderColor: =lblHeading_MyRequest_3.BorderColor
+            PressedColor: =lblHeading_MyRequest_3.Color
+            PressedFill: =lblHeading_MyRequest_3.Fill
+            Size: =13.5
+            Text: ="Dashboard"
+            Width: =140
+            X: =shpRectangle_MyRequest_4.X+32
+            Y: =shpRectangle_MyRequest_4.Y+22
+            ZIndex: =2
+
+        btnSearchRequest_MyRequest_3 As button:
+            BorderColor: =ColorFade(btnSearchRequest_MyRequest_3.Fill, -15%)
+            BorderThickness: =1
+            Color: =RGBA(37, 36, 36, 1)
+            Fill: =RGBA(255, 255, 255, 1)
+            FocusedBorderColor: =btnSearchRequest_MyRequest_3.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =32
+            HoverBorderColor: =ColorFade(btnSearchRequest_MyRequest_3.BorderColor, 20%)
+            HoverColor: =RGBA(0, 0, 0, 1)
+            HoverFill: =RGBA(171, 176, 184, 1)
+            OnSelect: =
+            PressedBorderColor: =btnSearchRequest_MyRequest_3.Fill
+            PressedColor: =RGBA(0, 0, 0, 1)
+            PressedFill: =RGBA(133, 140, 152, 1)
+            RadiusBottomLeft: =3
+            RadiusBottomRight: =3
+            RadiusTopLeft: =3
+            RadiusTopRight: =3
+            Size: =10.5
+            Text: ="Search"
+            Visible: =false
+            Width: =96
+            X: =btnExport_1.X-8-btnSearchRequest_MyRequest_3.Width
+            Y: =shpRectangle_MyRequest_4.Y+50
+            ZIndex: =3
+
+        txtSearchRequest_MyRequest_3 As text:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            BorderThickness: =0
+            Color: =RGBA(72, 70, 68, 1)
+            Default: =""
+            Fill: =RGBA(243, 242, 241, 1)
+            FocusedBorderColor: =txtSearchRequest_MyRequest_3.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =32
+            HintText: ="Search name"
+            HoverFill: =RGBA(230, 230, 230, 1)
+            OnChange: =
+            PaddingLeft: =32
+            PressedBorderColor: =txtSearchRequest_MyRequest_3.HoverBorderColor
+            PressedColor: =txtSearchRequest_MyRequest_3.Color
+            PressedFill: =txtSearchRequest_MyRequest_3.Fill
+            RadiusBottomLeft: =3
+            RadiusBottomRight: =3
+            RadiusTopLeft: =3
+            RadiusTopRight: =3
+            Size: =10.5
+            Width: =210
+            X: =1008
+            Y: =shpRectangle_MyRequest_4.Y+50
+            ZIndex: =4
+
+        shpInnerRectangle_MyRequest_3 As rectangle:
+            DisabledFill: =shpInnerRectangle_MyRequest_3.Fill
+            Fill: =RGBA(249, 248, 247, 1)
+            FocusedBorderColor: =shpInnerRectangle_MyRequest_3.BorderColor
+            Height: =Parent.Height-259
+            HoverFill: =shpInnerRectangle_MyRequest_3.Fill
+            PressedFill: =shpInnerRectangle_MyRequest_3.Fill
+            Width: =shpRectangle_MyRequest_4.Width-64
+            X: =shpRectangle_MyRequest_4.X+32
+            Y: =Label5_1.Y+Label5_1.Height+16
+            ZIndex: =5
+
+        lblTeamNameHeading_MyRequest_3 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblTeamNameHeading_MyRequest_3.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =16
+            HoverBorderColor: =lblTeamNameHeading_MyRequest_3.BorderColor
+            HoverColor: =lblTeamNameHeading_MyRequest_3.Color
+            HoverFill: =lblTeamNameHeading_MyRequest_3.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblTeamNameHeading_MyRequest_3.BorderColor
+            PressedColor: =lblTeamNameHeading_MyRequest_3.Color
+            PressedFill: =lblTeamNameHeading_MyRequest_3.Fill
+            Size: =9
+            Text: ="Name"
+            Width: =80
+            X: =shpInnerRectangle_MyRequest_3.X+16
+            Y: =shpInnerRectangle_MyRequest_3.Y+15
+            ZIndex: =6
+
+        lblTitleHeading_MyRequest_3 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblTitleHeading_MyRequest_3.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =16
+            HoverBorderColor: =lblTitleHeading_MyRequest_3.BorderColor
+            HoverColor: =lblTitleHeading_MyRequest_3.Color
+            HoverFill: =lblTitleHeading_MyRequest_3.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblTitleHeading_MyRequest_3.BorderColor
+            PressedColor: =lblTitleHeading_MyRequest_3.Color
+            PressedFill: =lblTitleHeading_MyRequest_3.Fill
+            Size: =9
+            Text: ="Unique check-ins"
+            X: =492
+            Y: =shpInnerRectangle_MyRequest_3.Y+15
+            ZIndex: =7
+
+        lblDayHeading_MyRequest_3 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblDayHeading_MyRequest_3.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =16
+            HoverBorderColor: =lblDayHeading_MyRequest_3.BorderColor
+            HoverColor: =lblDayHeading_MyRequest_3.Color
+            HoverFill: =lblDayHeading_MyRequest_3.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblDayHeading_MyRequest_3.BorderColor
+            PressedColor: =lblDayHeading_MyRequest_3.Color
+            PressedFill: =lblDayHeading_MyRequest_3.Fill
+            Size: =9
+            Text: ="Total check-ins"
+            Width: =120
+            X: =712
+            Y: =shpInnerRectangle_MyRequest_3.Y+15
+            ZIndex: =8
+
+        "glryMyRequest_3 As gallery.'BrowseLayout_Vertical_TwoTextOneImageVariant_ver4.0'":
+            DisabledBorderColor: =glryMyRequest_3.BorderColor
+            DisabledFill: =glryMyRequest_3.Fill
+            Fill: =RGBA(249, 248, 247, 1)
+            Height: =shpInnerRectangle_MyRequest_3.Height-48
+            HoverBorderColor: =glryMyRequest_3.BorderColor
+            HoverFill: =glryMyRequest_3.Fill
+            Items: |-
+                =/*
+                If(Dropdown2_4.Selected.Value="Last 7 days",Filter(colStaffCheckinTeamReports,StartsWith(UserCheckinTitle,txtSearchRequest_MyRequest_3.Text)&&UserCheckinSchedule=Dropdown2_5.Selected.Value,UserCheckinTeam=glryMyRequest_1.Selected.lblTeamName_MyRequest_1.Text,DateTimeValue(Created)>=(Today()-7)),If(Dropdown2_4.Selected.Value="Last 30 days",Filter(colStaffCheckinTeamReports,StartsWith(UserCheckinTitle,txtSearchRequest_MyRequest_3.Text)&&UserCheckinSchedule=Dropdown2_5.Selected.Value,UserCheckinTeam=glryMyRequest_1.Selected.lblTeamName_MyRequest_1.Text,DateTimeValue(Created)>=(Today()-30))))
+                */
+                Sort(Filter(colLast7and30days,StartsWith(First(grpUserLast7and30.UserName).UserName,txtSearchRequest_MyRequest_3.Text)),First(grpUserLast7and30.UserName).UserName,If(locLast7Sort,Ascending,Descending))
+                 
+            Layout: =Layout.Vertical
+            LoadingSpinnerColor: =glryMyRequest_3.BorderColor
+            PressedBorderColor: =glryMyRequest_3.BorderColor
+            PressedFill: =glryMyRequest_3.Fill
+            TemplatePadding: =0
+            TemplateSize: =48
+            Width: =shpInnerRectangle_MyRequest_3.Width
+            X: =shpInnerRectangle_MyRequest_3.X
+            Y: =shpDivider_MyRequest_3.Y+shpDivider_MyRequest_3.Height
+            ZIndex: =9
+
+            shpSeparator_MyRequest_3 As rectangle:
+                BorderStyle: =BorderStyle.None
+                DisabledFill: =shpSeparator_MyRequest_3.Fill
+                Fill: =RGBA(239, 239, 239, 1)
+                FocusedBorderColor: =shpSeparator_MyRequest_3.BorderColor
+                Height: =1
+                HoverFill: =shpSeparator_MyRequest_3.Fill
+                OnSelect: =Select(Parent)
+                PressedFill: =shpSeparator_MyRequest_3.Fill
+                Width: =Parent.TemplateWidth
+                Y: =Parent.TemplateHeight - 1
+                ZIndex: =5
+
+            lblUserName_MyRequest_3 As label:
+                Color: =RGBA(37, 36, 35, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =Parent.TemplateHeight/2.4
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =10.5
+                Text: |-
+                    =//Office365Users.UserProfile(ThisItem.UserEmail).DisplayName
+                    First(ThisItem.grpUserLast7and30.UserName).UserName
+                Tooltip: =
+                Width: =300
+                X: =52
+                Y: =14
+                ZIndex: =11
+
+            lblTitle_MyRequest_3 As label:
+                Color: =RGBA(37, 36, 35, 1)
+                Font: =Font.'Segoe UI'
+                Height: =Parent.TemplateHeight/2.4
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =10.5
+                Text: |
+                    =//CountRows(Distinct(Filter('UserCheck-ins',UserEmail=ThisItem.UserEmail),UniqueIdentifier))
+                    If(glryMyRequest_1.Selected.lblUserCheckinSchedule.Text="Ad-hoc",CountRows(Gallery5.AllItems),If(glryMyRequest_1.Selected.lblUserCheckinSchedule.Text="Scheduled",If(Dropdown2.Selected.CheckinFrequency.Value="Daily",CountRows(Distinct(Gallery2.AllItems,CreatedDate)),If(Dropdown2.Selected.CheckinFrequency.Value="Weekly", CountRows(Distinct(Gallery1.AllItems,CreatedDate))))))
+                Width: =200
+                X: =460
+                Y: =14
+                ZIndex: =12
+
+            Label2_12 As label:
+                Color: =RGBA(37, 36, 35, 1)
+                Font: =Font.'Segoe UI'
+                Height: =Parent.TemplateHeight/2.4
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =10.5
+                Text: =CountRows(Gallery6.AllItems)
+                Width: =140
+                X: =680
+                Y: =14
+                ZIndex: =17
+
+            Image2_1 As image:
+                Height: =16
+                HoverBorderColor: =ColorFade(Image2_1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image2_1.Fill, 20%)
+                Image: =Info
+                ImagePosition: =ImagePosition.Center
+                OnSelect: =Set(AllDetailsOfUser,true)
+                PressedBorderColor: =ColorFade(Image2_1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image2_1.Fill, -20%)
+                Visible: =!IsBlank(lblUserName_MyRequest_3.Text)
+                Width: =16
+                X: =1214
+                Y: =16
+                ZIndex: =18
+
+            Image3 As image:
+                Height: =28
+                HoverBorderColor: =ColorFade(Image3.BorderColor, 20%)
+                HoverFill: =ColorFade(Image3.Fill, 20%)
+                Image: =If(!IsBlank(lblUserName_MyRequest_3.Text),If(IsBlank(ThisItem.grpUserLast7and30.UserTitle),'dummy_user@1x',If(Office365Users.UserPhotoMetadata(ThisItem.UserEmail).HasPhoto=true,Office365Users.UserPhoto(ThisItem.UserEmail),'dummy_user@1x')))
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image3.BorderColor, -20%)
+                PressedFill: =ColorFade(Image3.Fill, -20%)
+                RadiusBottomLeft: =Image3.Height
+                RadiusBottomRight: =Image3.Height
+                RadiusTopLeft: =Image3.Height
+                RadiusTopRight: =Image3.Height
+                Width: =28
+                X: =16
+                Y: =10
+                ZIndex: =19
+
+            Gallery5 As gallery.galleryVertical:
+                Height: =31
+                Items: |
+                    =//Distinct(Filter('UserCheck-ins',UserEmail=ThisItem.UserEmail,UserCheckinTeam=glryMyRequest_1.Selected.lblTeamName_MyRequest_1.Text),UniqueIdentifier)
+                    If(glryMyRequest_1.Selected.lblUserCheckinSchedule.Text="Ad-hoc",Distinct(Filter('UserCheck-ins',UserEmail=ThisItem.UserEmail,UniqueIdentifier=glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text),UniqueIdentifier))
+                Layout: =Layout.Vertical
+                TemplateSize: =If(Self.Layout = Layout.Horizontal, Min(280, Self.Width - 60), Min(280, Self.Height - 60))
+                Visible: =false
+                Width: =93
+                X: =544
+                Y: =9
+                ZIndex: =20
+
+            Gallery6 As gallery.galleryVertical:
+                Height: =6
+                Items: =If(Dropdown2_4.Selected.Value="Last 7 days",Filter('UserCheck-ins',UserCheckinSchedule=Dropdown2_5.Selected.Value,UniqueIdentifier=glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,UserEmail=ThisItem.UserEmail,Created>=Last7days),If(Dropdown2_4.Selected.Value="Last 30 days",Filter('UserCheck-ins',UserCheckinSchedule=Dropdown2_5.Selected.Value,UniqueIdentifier=glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,UserEmail=ThisItem.UserEmail,Created>=Last30days)))
+                Layout: =Layout.Vertical
+                TemplateSize: =If(Self.Layout = Layout.Horizontal, Min(280, Self.Width - 60), Min(280, Self.Height - 60))
+                Visible: =false
+                Width: =143
+                X: =990
+                Y: =25
+                ZIndex: =21
+
+            lblUserEmail As label:
+                Height: =0
+                OnSelect: =Select(Parent)
+                Text: =ThisItem.UserEmail
+                Width: =0
+                X: =242
+                ZIndex: =22
+
+            Dropdown2 As dropdown:
+                HoverBorderColor: =ColorFade(Dropdown2.BorderColor, 15%)
+                Items: =LookUp('Check-inSchedule',UniqueIdentifier=First(ThisItem.grpUserLast7and30.UniqueIdentifier).UniqueIdentifier)
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =Dropdown2.HoverBorderColor
+                Visible: =false
+                X: =40
+                Y: =8
+                ZIndex: =23
+
+            Gallery1 As gallery.galleryVertical:
+                Height: =48
+                Items: =If(Dropdown2_4.Selected.Value="Last 7 days", Filter('UserCheck-ins',UserEmail=ThisItem.UserEmail,UniqueIdentifier=glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,Text(Created,"[$-en-US]dddd")in Dropdown2.Selected.CheckinDays.Value,Created>=Last7days),If(Dropdown2_4.Selected.Value="Last 30 days", Filter('UserCheck-ins',UserEmail=ThisItem.UserEmail,UniqueIdentifier=glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,Text(Created,"[$-en-US]dddd")in Dropdown2.Selected.CheckinDays.Value,Created>=Last30days)))
+                Layout: =Layout.Vertical
+                TemplateSize: =If(Self.Layout = Layout.Horizontal, Min(280, Self.Width - 60), Min(280, Self.Height - 60))
+                Visible: =false
+                X: =60
+                ZIndex: =24
+
+            Gallery2 As gallery.galleryVertical:
+                Height: =48
+                Items: =Filter('UserCheck-ins',UserEmail=ThisItem.UserEmail,UniqueIdentifier=glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text)
+                Layout: =Layout.Vertical
+                TemplateSize: =If(Self.Layout = Layout.Horizontal, Min(280, Self.Width - 60), Min(280, Self.Height - 60))
+                Visible: =false
+                X: =80
+                ZIndex: =25
+
+            lblLastCheckinLast7and30Days As label:
+                Color: =RGBA(37, 36, 35, 1)
+                FocusedBorderColor: =lblLastCheckinLast7and30Days.BorderColor
+                Font: =Font.'Segoe UI'
+                Height: =Parent.TemplateHeight/2.4
+                HoverBorderColor: =lblLastCheckinLast7and30Days.BorderColor
+                HoverColor: =lblLastCheckinLast7and30Days.Color
+                HoverFill: =lblLastCheckinLast7and30Days.Fill
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                PressedBorderColor: =lblLastCheckinLast7and30Days.BorderColor
+                PressedColor: =lblLastCheckinLast7and30Days.Color
+                PressedFill: =lblLastCheckinLast7and30Days.Fill
+                Size: =10.5
+                Text: |-
+                    =Text(DateTimeValue(First(ThisItem.grpUserLast7and30.Modified).Modified),"[$-en-Us]dd mmm yyy   hh:mm AM/PM")
+                Width: =180
+                X: =916
+                Y: =14
+                ZIndex: =26
+
+        icnSearch_MyRequest_3 As icon.Search:
+            Color: =RGBA(0, 0, 0, 1)
+            DisabledFill: =icnSearch_MyRequest_3.Fill
+            FocusedBorderColor: =icnSearch_MyRequest_3.BorderColor
+            Height: =16
+            HoverBorderColor: =ColorFade(icnSearch_MyRequest_3.BorderColor, 20%)
+            HoverColor: =ColorFade(icnSearch_MyRequest_3.Color, 20%)
+            HoverFill: =icnSearch_MyRequest_3.Fill
+            Icon: =Icon.Search
+            PressedBorderColor: =ColorFade(icnSearch_MyRequest_3.BorderColor, -20%)
+            PressedColor: =ColorFade(icnSearch_MyRequest_3.Color, -20%)
+            PressedFill: =icnSearch_MyRequest_3.Fill
+            Width: =16
+            X: =txtSearchRequest_MyRequest_3.X+8
+            Y: =txtSearchRequest_MyRequest_3.Y+8
+            ZIndex: =10
+
+        shpDivider_MyRequest_3 As rectangle:
+            DisabledFill: =shpDivider_MyRequest_3.Fill
+            Fill: =RGBA(237, 235, 233, 1)
+            Height: =1
+            HoverFill: =shpDivider_MyRequest_3.Fill
+            PressedFill: =shpDivider_MyRequest_3.Fill
+            Width: =shpInnerRectangle_MyRequest_3.Width
+            X: =shpInnerRectangle_MyRequest_3.X
+            Y: =shpInnerRectangle_MyRequest_3.Y+47
+            ZIndex: =11
+
+        lblTime_MyRequest_3 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            FocusedBorderColor: =lblTime_MyRequest_3.BorderColor
+            Font: =Font.'Segoe UI'
+            Height: =16
+            HoverBorderColor: =lblTime_MyRequest_3.BorderColor
+            HoverColor: =lblTime_MyRequest_3.Color
+            HoverFill: =lblTime_MyRequest_3.Fill
+            PaddingLeft: =0
+            PressedBorderColor: =lblTime_MyRequest_3.BorderColor
+            PressedColor: =lblTime_MyRequest_3.Color
+            PressedFill: =lblTime_MyRequest_3.Fill
+            Size: =9
+            Text: ="Details"
+            Width: =60
+            X: =1236
+            Y: =shpInnerRectangle_MyRequest_3.Y+15
+            ZIndex: =12
+
+    grpAllDetailsOfuser As group:
+        Height: =5
+        Width: =5
+        X: =60
+        Y: =60
+        ZIndex: =70
+
+        Rectangle1_8 As rectangle:
+            DisabledFill: =Rectangle1_8.Fill
+            Fill: =RGBA(0, 0, 0, 0.7)
+            Height: =Parent.Height
+            HoverFill: =Rectangle1_8.Fill
+            PressedFill: =Rectangle1_8.Fill
+            Visible: =AllDetailsOfUser
+            Width: =Parent.Width
+            ZIndex: =32
+
+        Rectangle2_8 As rectangle:
+            DisabledFill: =Rectangle2_8.Fill
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =Parent.Height-168
+            HoverFill: =Rectangle2_8.Fill
+            PressedFill: =Rectangle2_8.Fill
+            Visible: =AllDetailsOfUser
+            Width: =Parent.Width-466
+            X: =(Parent.Width/2)-(Rectangle2_8.Width/2)
+            Y: =(Parent.Height/2)-(Rectangle2_8.Height/2)
+            ZIndex: =33
+
+        Image5_2 As image:
+            Height: =32
+            HoverBorderColor: =ColorFade(Image5_2.BorderColor, 20%)
+            HoverFill: =ColorFade(Image5_2.Fill, 20%)
+            Image: ='$app-white_FLW Copy 3'
+            ImagePosition: =ImagePosition.Fill
+            PressedBorderColor: =ColorFade(Image5_2.BorderColor, -20%)
+            PressedFill: =ColorFade(Image5_2.Fill, -20%)
+            Visible: =AllDetailsOfUser
+            Width: =32
+            X: =Rectangle2_8.X+32
+            Y: =Rectangle2_8.Y+32
+            ZIndex: =34
+
+        Icon2_2 As icon.Cancel:
+            Color: =RGBA(0, 0, 0, 1)
+            DisabledFill: =Icon2_2.Fill
+            Height: =16
+            HoverBorderColor: =ColorFade(Icon2_2.BorderColor, 20%)
+            HoverColor: =ColorFade(Icon2_2.Color, 20%)
+            HoverFill: =Icon2_2.Fill
+            Icon: =Icon.Cancel
+            OnSelect: =Set(AllDetailsOfUser,false);
+            PressedBorderColor: =ColorFade(Icon2_2.BorderColor, -20%)
+            PressedColor: =ColorFade(Icon2_2.Color, -20%)
+            PressedFill: =Icon2_2.Fill
+            Visible: =AllDetailsOfUser
+            Width: =16
+            X: =Rectangle2_8.X+Rectangle2_8.Width-32-Icon2_2.Width
+            Y: =Rectangle2_8.Y+32
+            ZIndex: =35
+
+        Label14_2 As label:
+            Color: =RGBA(37, 36, 35, 1)
+            Font: =Font.'Segoe UI'
+            Height: =20
+            PaddingLeft: =0
+            Size: =10.5
+            Text: ="Staff Check-ins"
+            Visible: =AllDetailsOfUser
+            X: =Image5_2.X+Image5_2.Width+12
+            Y: =Rectangle2_8.Y+29
+            ZIndex: =36
+
+        Label15_2 As label:
+            Color: =RGBA(72, 70, 68, 1)
+            Font: =Font.'Segoe UI'
+            Height: =16
+            PaddingLeft: =0
+            Size: =9
+            Text: ="Check-in details"
+            Visible: =AllDetailsOfUser
+            X: =Image5_2.X+Image5_2.Width+12
+            Y: =Label14_2.Y+Label14_2.Height
+            ZIndex: =37
+
+        "Gallery4_1 As gallery.'BrowseLayout_Horizontal_TwoTextOneImageVariant_ver4.0'":
+            BorderStyle: =BorderStyle.None
+            DisplayMode: =DisplayMode.View
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =368
+            Items: |-
+                =//'UserCheck-ins'
+                //Filter('UserCheck-ins',UserEmail=glryMyRequest_3.Selected.UserEmail)
+                If(Dropdown2_4.Selected.Value="Last 7 days",Sort(Filter('UserCheck-ins',UserCheckinSchedule=Dropdown2_5.Selected.Value,UniqueIdentifier=glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,UserEmail=glryMyRequest_3.Selected.UserEmail,Created>=Last7days),Created,Descending),If(Dropdown2_4.Selected.Value="Last 30 days",Sort(Filter('UserCheck-ins',UserCheckinSchedule=Dropdown2_5.Selected.Value,UniqueIdentifier=glryMyRequest_1.Selected.lblUniqueIdentifier_MyRequest_1.Text,UserEmail=glryMyRequest_3.Selected.UserEmail,Created>=Last30days),Created,Descending)))
+            TemplateFill: =RGBA(249, 248, 247, 1)
+            TemplatePadding: =8
+            TemplateSize: =221
+            Visible: =AllDetailsOfUser
+            Width: =Rectangle2_8.Width-64
+            X: =Rectangle2_8.X+32
+            Y: =Label16_1.Y+Label16_1.Height+22
+            ZIndex: =39
+
+            Image9_1 As image:
+                Height: =134
+                HoverBorderColor: =ColorFade(Image9_1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image9_1.Fill, 20%)
+                Image: =ThisItem.UserCheckinPicture
+                ImagePosition: =ImagePosition.Fill
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image9_1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image9_1.Fill, -20%)
+                Width: =221
+                ZIndex: =1
+
+            Title4_1 As label:
+                Color: =RGBA(72, 70, 68, 1)
+                Font: =Font.'Segoe UI'
+                Height: =16
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =9
+                Text: =If(Len(ThisItem.UserCheckinTitle) >32, Concatenate(Left(ThisItem.UserCheckinTitle,30),"..."),ThisItem.UserCheckinTitle)
+                Tooltip: =ThisItem.UserCheckinTitle
+                Width: =177
+                X: =Label1.X+Label1.Width+8
+                Y: =Image9_1.Y+Image9_1.Height+8
+                ZIndex: =2
+
+            Subtitle3_1 As label:
+                Color: =RGBA(72, 70, 68, 1)
+                Font: =Font.'Segoe UI'
+                Height: =16
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =8
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =9
+                Text: =If(Len(ThisItem.UserCheckinAddress) >35, Concatenate(Left(ThisItem.UserCheckinAddress,32),"..."),ThisItem.UserCheckinAddress)
+                Tooltip: =ThisItem.UserCheckinAddress
+                VerticalAlign: =VerticalAlign.Top
+                Width: =182
+                Y: =Title4_1.Y+Title4_1.Height+43
+                ZIndex: =3
+
+            Image11_1 As image:
+                Height: =24
+                HoverBorderColor: =ColorFade(Image11_1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image11_1.Fill, 20%)
+                Image: ='Rectangle (1)'
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image11_1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image11_1.Fill, -20%)
+                Width: =24
+                X: =Subtitle3_1.X+Subtitle3_1.Width+7
+                Y: =Title4_1.Y+Title4_1.Height+39
+                ZIndex: =5
+
+            Image13_1 As image:
+                Height: =14
+                HoverBorderColor: =ColorFade(Image13_1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image13_1.Fill, 20%)
+                Image: =''
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image13_1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image13_1.Fill, -20%)
+                Width: =16
+                X: =8
+                Y: =Title4_1.Y+Title4_1.Height+17
+                ZIndex: =7
+
+            Label19_1 As label:
+                AutoHeight: =true
+                Color: =RGBA(72, 70, 68, 1)
+                Fill: =RGBA(249, 248, 247, 1)
+                Font: =Font.'Segoe UI'
+                Height: =92
+                OnSelect: =Select(Parent)
+                PaddingBottom: =0
+                PaddingLeft: =8
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =9
+                Text: =ThisItem.UserGivenNotes
+                VerticalAlign: =VerticalAlign.Top
+                Width: =221
+                Y: =Label21.Y+Label21.Height+4
+                ZIndex: =10
+
+            Label20_1 As label:
+                Color: =RGBA(72, 70, 68, 1)
+                Font: =Font.'Segoe UI'
+                Height: =16
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =9
+                Text: |
+                    =If(Len(ThisItem.UserCheckinTeam) >35, Concatenate(Left(ThisItem.UserCheckinTeam,32),"..."),ThisItem.UserCheckinTeam)
+                Tooltip: =ThisItem.UserCheckinTeam
+                Width: =160
+                X: =Image13_1.X+Image13_1.Width+9
+                Y: =Title4_1.Y+Title4_1.Height+16
+                ZIndex: =11
+
+            Label22 As label:
+                Align: =Align.Center
+                Color: =RGBA(151, 149, 147, 1)
+                Fill: =RGBA(249, 248, 247, 1)
+                Font: =Font.'Segoe UI'
+                Height: =16
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =9
+                Text: =Text(ThisItem.Modified,"[$-en-US]dd mmm yyy")
+                Width: =76
+                X: =Image1.X+Image1.Width+8
+                Y: =Subtitle3_1.Y+Subtitle3_1.Height+13
+                ZIndex: =12
+
+            Label23 As label:
+                Align: =Align.Right
+                Color: =RGBA(151, 149, 147, 1)
+                Font: =Font.'Segoe UI'
+                Height: =16
+                OnSelect: =Select(Parent)
+                PaddingRight: =8
+                Size: =9
+                Text: |-
+                    =Text(ThisItem.Modified,"[$-en-US]hh:mm AM/PM")
+                Width: =91
+                X: =130
+                Y: =Subtitle3_1.Y+Subtitle3_1.Height+13
+                ZIndex: =13
+
+            Label1 As label:
+                Color: =RGBA(72, 70, 68, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =16
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =9
+                Text: |-
+                    ="Title:"
+                Width: =32
+                X: =8
+                Y: =Image9_1.Y+Image9_1.Height+8
+                ZIndex: =14
+
+            Image1 As image:
+                Height: =16
+                HoverBorderColor: =ColorFade(Image1.BorderColor, 20%)
+                HoverFill: =ColorFade(Image1.Fill, 20%)
+                Image: =''
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image1.BorderColor, -20%)
+                PressedFill: =ColorFade(Image1.Fill, -20%)
+                Width: =16
+                X: =8
+                Y: =Subtitle3_1.Y+Subtitle3_1.Height+13
+                ZIndex: =15
+
+            Image8 As image:
+                Height: =16
+                HoverBorderColor: =ColorFade(Image8.BorderColor, 20%)
+                HoverFill: =ColorFade(Image8.Fill, 20%)
+                Image: =''
+                OnSelect: =Select(Parent)
+                PressedBorderColor: =ColorFade(Image8.BorderColor, -20%)
+                PressedFill: =ColorFade(Image8.Fill, -20%)
+                Width: =16
+                X: =Image1.X+Image1.Width+115
+                Y: =Subtitle3_1.Y+Subtitle3_1.Height+13
+                ZIndex: =16
+
+            Label21 As label:
+                Color: =RGBA(72, 70, 68, 1)
+                Font: =Font.'Segoe UI'
+                FontWeight: =FontWeight.Semibold
+                Height: =16
+                OnSelect: =Select(Parent)
+                PaddingLeft: =0
+                Size: =9
+                Text: ="Note"
+                X: =8
+                Y: =Label22.Y+Label22.Height+13
+                ZIndex: =17
+
+        Label16_1 As label:
+            Font: =Font.'Segoe UI'
+            FontWeight: =FontWeight.Semibold
+            Height: =20
+            PaddingLeft: =0
+            Size: =10.5
+            Text: |-
+                =//Office365Users.UserProfile(glryMyRequest_3.Selected.UserEmail).DisplayName
+                If(Len(First(glryMyRequest_3.Selected.grpUserLast7and30.UserName).UserName) >33, Concatenate(Left(First(glryMyRequest_3.Selected.grpUserLast7and30.UserName).UserName,30),"..."),First(glryMyRequest_3.Selected.grpUserLast7and30.UserName).UserName)
+            Tooltip: =First(glryMyRequest_3.Selected.grpUserLast7and30.UserName).UserName
+            Visible: =AllDetailsOfUser
+            Width: =300
+            X: =Image10_2.X+Image10_2.Width+8
+            Y: =Image5_2.Y+Image5_2.Height+30
+            ZIndex: =45
+

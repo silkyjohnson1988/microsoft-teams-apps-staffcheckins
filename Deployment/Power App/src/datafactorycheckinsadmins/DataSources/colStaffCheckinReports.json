@@ -1,0 +1,96 @@
+[
+  {
+    "IsSampleData": false,
+    "IsWritable": true,
+    "Name": "colStaffCheckinReports",
+    "Schema": {
+      "Type": {
+        "EnumString": "",
+        "Kind": "Table",
+        "Name": "Root",
+        "Type": [
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "Created",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "ID",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "Modified",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "Result",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "UniqueIdentifier",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "UserCheckinAddress",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "UserCheckinSchedule",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "UserCheckinTeam",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "UserCheckinTitle",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "UserCreatedDate",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "UserEmail",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "UserGivenNotes",
+            "Type": []
+          },
+          {
+            "EnumString": "",
+            "Kind": "String",
+            "Name": "UserTitle",
+            "Type": []
+          }
+        ]
+      },
+      "Version": "1.289"
+    },
+    "Type": "CollectionDataSourceInfo"
+  }
+]

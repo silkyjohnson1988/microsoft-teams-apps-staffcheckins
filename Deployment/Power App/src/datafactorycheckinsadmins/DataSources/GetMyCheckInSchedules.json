@@ -1,0 +1,9 @@
+[
+  {
+    "AddinConnectorId": "b4277abc-62ea-4da7-bfb8-eda1684e47f4",
+    "AddinId": "6d1f157d-95bf-406d-b65d-cfd3240f724e",
+    "Name": "GetMyCheckInSchedules",
+    "ServiceKind": "AddinWadl",
+    "Type": "ServiceInfo"
+  }
+]

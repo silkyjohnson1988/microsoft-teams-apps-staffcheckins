@@ -1,0 +1,64 @@
+{
+  "FormatVersion": "0.24",
+  "Header": {
+    "DocVersion": "1.289",
+    "MinVersionToLoad": "1.289",
+    "MSAppStructureVersion": "2.0"
+  },
+  "Properties": {
+    "AppCreationSource": "AppFromScratch",
+    "AppDescription": "",
+    "AppPreviewFlagsKey": [
+      "delayloadscreens",
+      "projectionmapping",
+      "usedisplaynamemetadata",
+      "usenonblockingonstartrule",
+      "useguiddatatypes",
+      "useexperimentalcdsconnector",
+      "useenforcesavedatalimits",
+      "componentauthoring",
+      "reliableconcurrent",
+      "dataTableV2Control",
+      "nativecdsexperimental",
+      "delaycontrolrendering",
+      "useexperimentalsqlconnector",
+      "enablecdsfileandlargeimage",
+      "enhanceddelegation",
+      "aibuilderserviceenrollment"
+    ],
+    "Author": "",
+    "ContainsThirdPartyPcfControls": false,
+    "DefaultConnectedDataSourceMaxGetRowsCount": 2000,
+    "DocumentAppType": "DesktopOrTablet",
+    "DocumentLayoutHeight": 768,
+    "DocumentLayoutLockOrientation": true,
+    "DocumentLayoutMaintainAspectRatio": true,
+    "DocumentLayoutOrientation": "landscape",
+    "DocumentLayoutScaleToFit": true,
+    "DocumentLayoutWidth": 1366,
+    "DocumentType": "App",
+    "EnableInstrumentation": false,
+    "FileID": "460f7f48-7383-4d23-a42d-0225d5a86cb7",
+    "Id": "460f7f48-7383-4d23-a42d-0225d5a86cb7",
+    "InstrumentationKey": "",
+    "LastControlUniqueId": 494,
+    "LocalDatabaseReferences": "{}",
+    "Name": "Staff Check-ins Admins",
+    "OriginatingVersion": "1.284"
+  },
+  "PublishInfo": {
+    "AppName": "Staff Check-ins Admins",
+    "BackgroundColor": "rgba(0, 134, 208, 1)",
+    "LogoFileName": "logo.jpg",
+    "PublishDataLocally": false,
+    "PublishResourcesLocally": false,
+    "PublishTarget": "player",
+    "UserLocale": "en-US"
+  },
+  "ScreenOrder": [
+    "scrnCheckInReport",
+    "scrnCreatedCheckIn",
+    "scrnToday'sCheckInReport",
+    "scrnLast7/30DaysCheckInReport"
+  ]
+}

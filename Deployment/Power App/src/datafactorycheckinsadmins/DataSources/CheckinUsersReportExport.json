@@ -1,0 +1,9 @@
+[
+  {
+    "AddinConnectorId": "c0a86b35-2f68-41b6-810f-f8e34d7f2e6f",
+    "AddinId": "6d1f157d-95bf-406d-b65d-cfd3240f724e",
+    "Name": "CheckinUsersReportExport",
+    "ServiceKind": "AddinWadl",
+    "Type": "ServiceInfo"
+  }
+]

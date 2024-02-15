@@ -1,0 +1,9 @@
+[
+  {
+    "AddinConnectorId": "dac94cc7-c176-465c-adeb-f900cb8553c4",
+    "AddinId": "6d1f157d-95bf-406d-b65d-cfd3240f724e",
+    "Name": "StaffCheckinReports",
+    "ServiceKind": "AddinWadl",
+    "Type": "ServiceInfo"
+  }
+]
