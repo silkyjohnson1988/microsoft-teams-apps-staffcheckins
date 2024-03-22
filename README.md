@@ -18,6 +18,7 @@ First-line staff in organizations typically need to communicate and check-in wit
 With the app, managers or supervisors can get task updates or check-ins from employees on a schedule or an ad-hoc basis. The staff check-in can include real-time location, photos, and notes.
 
 ## Key features
+
  -  Managers/Supervisors can set up a one- time or recurring occurrence of a check-in request
  -  Access all the information about the team in one place and track progress - validate locations and photos to ensure that your employees are pushing accurate data
  -  Automate operations workflow by triggering reminder notifications for end-users on Microsoft Teams
